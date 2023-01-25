@@ -5,43 +5,17 @@ using UnityEngine;
 
 public class ButtonSwing : MonoBehaviour
 {
-    public GameObject bat;
-
-    HingeJoint hjBat;
-    JointSpring spBat;
-
-    private const float spring = 40000;
-    private const float damper = 1000;
-
-    private const float positionBeforeSwing = -45;
-    private const float positionAfterSwing = 60;
+    public GameObject batter;
+    private Animator animator;
 
     void Start()
     {
-        hjBat = bat.GetComponent<HingeJoint>();
-        spBat = hjBat.spring;
-        spBat.spring = spring;
-        spBat.damper = damper;        
+        animator = batter.GetComponent<Animator>();
     }
 
     public void OnClick()
     {
-        swingBat();
-
-        // returnBat();
-    }
-
-
-    private void swingBat()
-    {
-        spBat.targetPosition = positionAfterSwing;
-        hjBat.spring = spBat;
-    }
-
-    private void returnBat()
-    {
-        spBat.targetPosition = positionBeforeSwing;
-        hjBat.spring = spBat;
+        animator.SetTrigger("SwingTrigger");
     }
 
 }
