@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028334, g: 0.2257134, b: 0.30692226, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3421,7 +3421,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ab25b322e570304f8087ab029ef419e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  battingTarget: {fileID: 6003936292375450369, guid: ad8105dc5ac4cdd40ab7261f0f8a9953,
+  battingTarget: {fileID: 7241503185792172983, guid: 352ea163558e9da4c81c2fa72ebc599f,
     type: 3}
   shotSound: {fileID: 8300000, guid: f24acae8437f21643ab5b842edbef894, type: 3}
 --- !u!1 &1545146584 stripped
