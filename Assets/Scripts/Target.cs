@@ -27,7 +27,7 @@ public class Target : MonoBehaviour
     public void display()
     {
         this.obj.SetActive(true);
-        this.obj.GetComponent<Collider>().enabled = true;
+        this.obj.GetComponent<SphereCollider>().enabled = true;
     }
 
     public void hide()
@@ -74,7 +74,7 @@ public class Target : MonoBehaviour
 
     public void colliderOff()
     {
-        this.obj.GetComponent<Collider>().enabled = false;
+        this.obj.GetComponent<SphereCollider>().enabled = false;
     }
 
     internal bool isSmallPositionZ(float targetPositionZ)
