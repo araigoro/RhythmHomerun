@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028334, g: 0.2257134, b: 0.30692226, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -4376,7 +4376,7 @@ MeshCollider:
   m_GameObject: {fileID: 2131230680}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   m_Convex: 0
   m_CookingOptions: 30
@@ -4461,4 +4461,8 @@ MonoBehaviour:
   pitchingMachine: {fileID: 2131230680}
   targetPrefabs:
   - {fileID: 6003936292375450369, guid: ad8105dc5ac4cdd40ab7261f0f8a9953, type: 3}
+  - {fileID: 7241503185792172983, guid: 352ea163558e9da4c81c2fa72ebc599f, type: 3}
+  - {fileID: 7241503185792172983, guid: 8e62fe8dae4bf104fabfad5a042aed6c, type: 3}
+  - {fileID: 7241503185792172983, guid: 39abc773460308a4f88f5b38f1d7a62d, type: 3}
+  - {fileID: 7241503185792172983, guid: 4e424c429009e0f43b72403b0403f316, type: 3}
   soundShot: {fileID: 8300000, guid: f24acae8437f21643ab5b842edbef894, type: 3}
