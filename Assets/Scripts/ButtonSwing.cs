@@ -8,6 +8,8 @@ public class ButtonSwing : MonoBehaviour
     public GameObject batter;
     private Animator animator;
 
+    private const string TriggerSwing = "TriggerSwing";
+
     void Start()
     {
         animator = batter.GetComponent<Animator>();
@@ -15,7 +17,7 @@ public class ButtonSwing : MonoBehaviour
 
     public void OnClick()
     {
-        animator.SetTrigger("SwingTrigger");
+        animator.SetTrigger(TriggerSwing);
     }
 
 }
