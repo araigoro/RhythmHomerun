@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8523720667347257425}
   - component: {fileID: 6802931254094524591}
   - component: {fileID: 4317827853918709666}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: LaptopPCObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -73,6 +73,10 @@ PrefabInstance:
     - target: {fileID: 1738331711847148, guid: 0c77140e8c421b240bca40795dc8aa9d, type: 3}
       propertyPath: m_Name
       value: silver_laptop_ON
+      objectReference: {fileID: 0}
+    - target: {fileID: 1738331711847148, guid: 0c77140e8c421b240bca40795dc8aa9d, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 4835774416084140, guid: 0c77140e8c421b240bca40795dc8aa9d, type: 3}
       propertyPath: m_RootOrder

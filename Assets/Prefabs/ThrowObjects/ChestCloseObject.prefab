@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8523720667347257425}
   - component: {fileID: 6802931254094524591}
   - component: {fileID: 4317827853918709666}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: ChestCloseObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -73,6 +73,10 @@ PrefabInstance:
     - target: {fileID: 1000011713842796, guid: ffd3e66d4df2a554fb995d41f7ffe4c2, type: 3}
       propertyPath: m_Name
       value: chest_close
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000011713842796, guid: ffd3e66d4df2a554fb995d41f7ffe4c2, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 1000011713842796, guid: ffd3e66d4df2a554fb995d41f7ffe4c2, type: 3}
       propertyPath: m_IsActive
