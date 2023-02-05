@@ -6,67 +6,121 @@ using UnityEngine;
 
 public class PitchingMachine : MonoBehaviour
 {
-    public GameObject pitchingMachine;
-    public GameObject[] targetPrefabs;
-    public AudioClip soundShot;
+    /// <summary>
+    /// 自身のゲームオブジェクト
+    /// </summary>
+    [SerializeField] private GameObject pitchingMachine;
+    
+    /// <summary>
+    /// ターゲットとして投げるオブジェクトのプレハブ
+    /// </summary>
+    [SerializeField] private GameObject[] targetPrefabs;
+    
+    /// <summary>
+    /// ショット音
+    /// </summary>
+    [SerializeField] private AudioClip soundShot;
 
+    /// <summary>
+    /// ターゲット保持テーブル
+    /// </summary>
     private List<Target> targetPool = new List<Target>();
 
-    private const int MAX_TARGET_COUNT = 10;
-    private const int SHOT_INTERVAL = 2000;
+    /// <summary>
+    /// 投げる間隔(単位：フレーム)
+    /// </summary>
+    private const int ShotInterval = 2000;
 
-    private const float SHOT_SPEED = 270;
+    /// <summary>
+    /// 投げるオブジェクトの速度
+    /// </summary>
+    private const float ShotSpeed = 270;
 
-    private const float SHOT_ANGLE = 30;
+    /// <summary>
+    /// 投げるオブジェクトの角度
+    /// </summary>
+    private const float ShotAngle = 30;
 
-
-
-    private Vector3 INITIAL_POSITION = new Vector3(0, -10, 0);
 
     private Vector3 STRIKE_POSITION = new Vector3(0, 3, -1) / 10;
 
     private void Awake()
     {
-        for (int i = 0; i <= MAX_TARGET_COUNT; i++)
-        {
-            GameObject obj = Instantiate(selectRandomTargetPrefab(), INITIAL_POSITION, Quaternion.identity);
-            Target target = new Target(obj);
-            target.hide();
-            targetPool.Add(target);
-        }
+        // すべてのターゲットプレハブを生成して、ターゲットプールに追加する
+        CreateAllTargetPrefabs();
     }
 
     private void Update()
     {
-        int frameCount = Time.frameCount;
-        if (isShotTarget(frameCount))
+        // 一定間隔で投げる
+        if ((Time.frameCount % ShotInterval) == 0)
         {
-            shotTarget();
+            ShotTarget();
+        }
+    }
+    
+    /// <summary>
+    /// ランダムでターゲットを選んで投げる
+    /// </summary>
+    private void ShotTarget()
+    {
+        // ランダムで次に投げるターゲットを選ぶ
+        var target = SelectRandomTarget();
+        
+        if (target != null)
+        {
+            // 初期位置に設定
+            target.Reposition(pitchingMachine.transform.position);
+            target.SetDisplay(true);
+            target.MoveParabola(STRIKE_POSITION, ShotAngle, ShotSpeed);
+
+            // 投げる音を鳴らす
+            AudioSource.PlayClipAtPoint(soundShot, pitchingMachine.transform.position);
+
+            // 一定時間で消す
+            StartCoroutine(target.Collect());
         }
     }
 
-    private void shotTarget()
+    /// <summary>
+    /// すべてのターゲットプレハブを生成して、ターゲットプールに追加する
+    /// </summary>
+    private void CreateAllTargetPrefabs()
     {
-        Target target = selectRandomTarget();
-        target.reposition(pitchingMachine.transform.position);
-        target.display();
-        target.moveParabola(STRIKE_POSITION, SHOT_ANGLE, SHOT_SPEED);
-        AudioSource.PlayClipAtPoint(soundShot, pitchingMachine.transform.position);
-        StartCoroutine(target.collect());
+        targetPool.Clear();
+
+        // 登録されているすべてのターゲットプレハブに紐づけた、Targetを生成する
+        for (int index = 0; index < targetPrefabs.Length; index++)
+        {
+            // ターゲットを生成
+            var gameObject = Instantiate(targetPrefabs[index], transform.position, Quaternion.identity);
+            Target target = new Target(gameObject);
+            target.SetDisplay(false);
+
+            // ターゲットプールに追加
+            targetPool.Add(target);
+        }
     }
 
-    private GameObject selectRandomTargetPrefab()
+    /// <summary>
+    /// 非表示のターゲットの中からランダムに選ぶ
+    /// </summary>
+    /// <returns>ターゲット(選べなかった場合はnull)</returns>
+    private Target SelectRandomTarget()
     {
-        return targetPrefabs[UnityEngine.Random.Range(0, targetPrefabs.Length)];
-    }
+        // 無限ループにならないように対処
+        if (targetPool.Count == 0)
+        {
+            return null;
+        }
 
-    private Target selectRandomTarget()
-    {
-        return targetPool[UnityEngine.Random.Range(0, targetPool.Count)];
-    }
+        // ランダムに選ぶ
+        Target target;
+        do
+        {
+            target = targetPool[UnityEngine.Random.Range(0, targetPool.Count)];
+        } while (target.IsDisplay == false);
 
-    private bool isShotTarget(int frameCount)
-    {
-        return frameCount % SHOT_INTERVAL == 0;
+        return target;
     }
 }

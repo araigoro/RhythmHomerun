@@ -3,56 +3,86 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Target : MonoBehaviour
+public class Target
 {
     private const string HIT_TARGET = "HitTarget";
 
     private const float WAIT_HIDE_TIME = 4.0f;
 
-    private GameObject obj;
+    /// <summary>
+    /// ターゲットプレハブのGameObject
+    /// </summary>
+    private GameObject targetGameObject;
 
-    public Target(GameObject obj)
+    /// <summary>
+    /// ターゲットのCollider
+    /// ※ターゲットによってコライダーの種類が異なるので、Collider型で探して保持しておく
+    /// </summary>
+    private Collider targetCollider;
+
+    /// <summary>
+    /// ターゲットのRigitbody
+    /// </summary>
+    private Rigidbody targetRigitbody;
+
+    /// <summary>
+    /// 表示中か？
+    /// </summary>
+    public bool IsDisplay
     {
-        this.obj = obj;
+        get { return targetGameObject.activeSelf ? false : true; }
     }
 
-    public void moveParabola(Vector3 targetPosition, float angle, float speed)
+    public Target(GameObject gameObject)
     {
-        Vector3 startPosition = this.obj.transform.position;
-        Vector3 velocity = calcVelocity(startPosition, targetPosition, angle);
-        Rigidbody rb = this.obj.GetComponent<Rigidbody>();
-        rb.AddForce(velocity * rb.mass, ForceMode.Impulse);
+        targetGameObject = gameObject;
+
+        // GetComponentは重いので、コンポーネントを取得して保持しておく
+        targetCollider = targetGameObject.GetComponent<Collider>();
+        targetRigitbody = targetGameObject.GetComponent<Rigidbody>();
     }
 
-    public void display()
+    public void MoveParabola(Vector3 targetPosition, float angle, float speed)
     {
-        this.obj.SetActive(true);
-        this.obj.GetComponent<Collider>().enabled = true;
+        Vector3 startPosition = targetGameObject.transform.position;
+        Vector3 velocity = CalcVelocity(startPosition, targetPosition, angle);
+        targetRigitbody.AddForce(velocity * targetRigitbody.mass, ForceMode.Impulse);
     }
 
-    public void hide()
+    /// <summary>
+    /// 表示／非表示を設定する
+    /// </summary>
+    /// <param name="isDisplay">true:表示 / false:非表示</param>
+    public void SetDisplay(bool isDisplay)
     {
-        this.obj.SetActive(false);
+        targetGameObject.SetActive(isDisplay);
+
+        if (isDisplay == true)
+        {
+            // 表示
+            targetCollider.enabled = true;
+        }
     }
 
-    public IEnumerator collect()
+    public IEnumerator Collect()
     {
         yield return new WaitForSeconds(WAIT_HIDE_TIME);
-        this.obj.GetComponent<Rigidbody>().velocity = Vector3.zero;
-        hide();
+
+        targetRigitbody.velocity = Vector3.zero;
+        SetDisplay(false);
     }
 
-    public void reposition(Vector3 targetPosition)
+    public void Reposition(Vector3 targetPosition)
     {
-        this.obj.transform.position = targetPosition;
+        targetGameObject.transform.position = targetPosition;
     }
 
-    public bool isHitTarget()
+    public bool IsHitTarget()
     {
-        return LayerMask.LayerToName(this.obj.layer) == HIT_TARGET;
+        return LayerMask.LayerToName(targetGameObject.layer) == HIT_TARGET;
     }
 
-    private Vector3 calcVelocity(Vector3 startPosition, Vector3 endPosition, float angle)
+    private Vector3 CalcVelocity(Vector3 startPosition, Vector3 endPosition, float angle)
     {
         float rad = angle * Mathf.PI / 180;
         float diffX = Vector2.Distance(new Vector2(startPosition.x, startPosition.z), new Vector2(endPosition.x, endPosition.z));
@@ -67,18 +97,19 @@ public class Target : MonoBehaviour
         return (new Vector3(endPosition.x - startPosition.x, diffX * Mathf.Tan(rad), endPosition.z - startPosition.z).normalized * initVelocity);
     }
 
-    public bool isLargePositionZ(float targetPositionZ)
+    public void ColliderOff()
     {
-        return this.obj.transform.position.z > targetPositionZ;
+        targetCollider.enabled = false;
     }
 
-    public void colliderOff()
+    public bool IsLargePositionZ(float targetPositionZ)
     {
-        this.obj.GetComponent<Collider>().enabled = false;
+        return targetGameObject.transform.position.z > targetPositionZ;
     }
 
-    internal bool isSmallPositionZ(float targetPositionZ)
+    internal bool IsSmallPositionZ(float targetPositionZ)
     {
-        return this.obj.transform.position.z < targetPositionZ;
+        Target target = this;
+        return target.targetGameObject.transform.position.z < targetPositionZ;
     }
 }

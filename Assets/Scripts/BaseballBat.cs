@@ -23,7 +23,7 @@ public class BaseballBat : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         Target target = new Target(collision.gameObject);
-        if (!target.isHitTarget())
+        if (!target.IsHitTarget())
         {
             return;
         }
@@ -33,9 +33,9 @@ public class BaseballBat : MonoBehaviour
     private void hitTarget(Target target)
     {
         AudioSource.PlayClipAtPoint(soundHit, transform.position);
-        target.colliderOff();
+        target.ColliderOff();
         Vector3 targetPosition = selectTargetPoint(target);
-        target.moveParabola(targetPosition, HIT_ANGLE, HIT_POWER);
+        target.MoveParabola(targetPosition, HIT_ANGLE, HIT_POWER);
     }
 
     private Vector3 selectTargetPoint(Target target)
@@ -60,12 +60,12 @@ public class BaseballBat : MonoBehaviour
 
     private bool isLeftHit(Target target)
     {
-        return target.isLargePositionZ(BORDER_LEFT_DIRECTION);
+        return target.IsLargePositionZ(BORDER_LEFT_DIRECTION);
     }
 
     private bool isRightHit(Target target)
     {
-        return target.isSmallPositionZ(BORDER_RIGHT_DIRECTION);
+        return target.IsSmallPositionZ(BORDER_RIGHT_DIRECTION);
     }
 
 
