@@ -7,6 +7,11 @@ public class BaseballBat : MonoBehaviour
 {
     public AudioClip soundHit;
 
+    /// <summary>
+    /// ピッチングマシンのGameObject
+    /// </summary>
+    private PitchingMachine pitchingMachine;
+
     private readonly Vector3[] HOMERUN_POINT_LEFT = { new Vector3(-27, 4, 35), new Vector3(-25, 4, 43), new Vector3(-20, 4, 47) };
 
     private readonly Vector3[] HOMERUN_POINT_CENTER = { new Vector3(0, 5, 45), new Vector3(-10, 4, 40), new Vector3(7, 3, 48) };
@@ -20,22 +25,40 @@ public class BaseballBat : MonoBehaviour
     private const float BORDER_LEFT_DIRECTION = 0.2f;
     private const float BORDER_RIGHT_DIRECTION = 0.0f;
 
+    private void Awake()
+    {
+        // ピッチングマシンのGameObjectを保持
+        var gameObject = GameObject.Find("Pitching Machine");
+        if (gameObject != null)
+        {
+            pitchingMachine = gameObject.GetComponent<PitchingMachine>();
+        }
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
-        Target target = new Target(collision.gameObject);
-        if (!target.isHitTarget())
+        // ピッチングマシンのコンポーネントが取得できなかった場合は、ログ表示
+        if (pitchingMachine == null)
         {
+            Debug.Log("Not found!! Pitching Machine is null!!");
             return;
         }
-        hitTarget(target);
+
+        // 対象のGameObjectがターゲットオブジェクトか？
+        Target target = pitchingMachine.FindTarget(collision.gameObject);
+        if (target != null)
+        {
+            // 打つ！
+            hitTarget(target);
+        }
     }
 
     private void hitTarget(Target target)
     {
         AudioSource.PlayClipAtPoint(soundHit, transform.position);
-        target.colliderOff();
+        target.ColliderOff();
         Vector3 targetPosition = selectTargetPoint(target);
-        target.moveParabola(targetPosition, HIT_ANGLE, HIT_POWER);
+        target.MoveParabola(targetPosition, HIT_ANGLE);
     }
 
     private Vector3 selectTargetPoint(Target target)
@@ -60,12 +83,12 @@ public class BaseballBat : MonoBehaviour
 
     private bool isLeftHit(Target target)
     {
-        return target.isLargePositionZ(BORDER_LEFT_DIRECTION);
+        return target.IsLargePositionZ(BORDER_LEFT_DIRECTION);
     }
 
     private bool isRightHit(Target target)
     {
-        return target.isSmallPositionZ(BORDER_RIGHT_DIRECTION);
+        return target.IsSmallPositionZ(BORDER_RIGHT_DIRECTION);
     }
 
 
