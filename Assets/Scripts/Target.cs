@@ -16,7 +16,7 @@ public class Target
     /// <summary>
     /// ターゲットプレハブのGameObject
     /// </summary>
-    private GameObject targetGameObject;
+    public GameObject TargetGameObject { get; private set; }
 
     /// <summary>
     /// ターゲットのCollider
@@ -34,7 +34,7 @@ public class Target
     /// </summary>
     public bool IsDisplay
     {
-        get { return targetGameObject.activeSelf ? false : true; }
+        get { return TargetGameObject.activeSelf ? false : true; }
     }
 
     /// <summary>
@@ -43,11 +43,11 @@ public class Target
     /// <param name="gameObject">ターゲットのプレハブのGameObject</param>
     public Target(GameObject gameObject)
     {
-        targetGameObject = gameObject;
+        TargetGameObject = gameObject;
 
         // GetComponentは重いので、コンポーネントを取得して保持しておく
-        targetCollider = targetGameObject.GetComponent<Collider>();
-        targetRigitbody = targetGameObject.GetComponent<Rigidbody>();
+        targetCollider = TargetGameObject.GetComponent<Collider>();
+        targetRigitbody = TargetGameObject.GetComponent<Rigidbody>();
     }
 
     /// <summary>
@@ -57,7 +57,7 @@ public class Target
     /// <param name="angle">角度</param>
     public void MoveParabola(Vector3 targetPosition, float angle)
     {
-        var startPosition = targetGameObject.transform.position;
+        var startPosition = TargetGameObject.transform.position;
         var velocity = CalcVelocity(startPosition, targetPosition, angle);
         targetRigitbody.AddForce(velocity * targetRigitbody.mass, ForceMode.Impulse);
     }
@@ -68,7 +68,7 @@ public class Target
     /// <param name="isDisplay">true:表示 / false:非表示</param>
     public void SetDisplay(bool isDisplay)
     {
-        targetGameObject.SetActive(isDisplay);
+        TargetGameObject.SetActive(isDisplay);
 
         if (isDisplay == true)
         {
@@ -95,7 +95,7 @@ public class Target
     /// <param name="targetPosition"></param>
     public void Respawn(Vector3 targetPosition)
     {
-        targetGameObject.transform.position = targetPosition;
+        TargetGameObject.transform.position = targetPosition;
     }
 
     /// <summary>
@@ -104,7 +104,7 @@ public class Target
     /// <returns>true: ターゲット / false: 非ターゲット</returns>
     public bool IsHitTarget()
     {
-        return LayerMask.LayerToName(targetGameObject.layer) == hitTargetLayerName;
+        return LayerMask.LayerToName(TargetGameObject.layer) == hitTargetLayerName;
     }
 
     /// <summary>
@@ -144,7 +144,7 @@ public class Target
     /// <returns>true: 大きい / false: 同じか小さい</returns>
     public bool IsLargePositionZ(float targetPositionZ)
     {
-        return targetGameObject.transform.position.z > targetPositionZ;
+        return TargetGameObject.transform.position.z > targetPositionZ;
     }
 
     /// <summary>
@@ -154,6 +154,6 @@ public class Target
     /// <returns>true: 小さい / false: 同じか大きい</returns>
     internal bool IsSmallPositionZ(float targetPositionZ)
     {
-        return targetGameObject.transform.position.z < targetPositionZ;
+        return TargetGameObject.transform.position.z < targetPositionZ;
     }
 }

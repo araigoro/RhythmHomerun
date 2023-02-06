@@ -7,6 +7,11 @@ public class BaseballBat : MonoBehaviour
 {
     public AudioClip soundHit;
 
+    /// <summary>
+    /// ピッチングマシンのGameObject
+    /// </summary>
+    private PitchingMachine pitchingMachine;
+
     private readonly Vector3[] HOMERUN_POINT_LEFT = { new Vector3(-27, 4, 35), new Vector3(-25, 4, 43), new Vector3(-20, 4, 47) };
 
     private readonly Vector3[] HOMERUN_POINT_CENTER = { new Vector3(0, 5, 45), new Vector3(-10, 4, 40), new Vector3(7, 3, 48) };
@@ -20,14 +25,32 @@ public class BaseballBat : MonoBehaviour
     private const float BORDER_LEFT_DIRECTION = 0.2f;
     private const float BORDER_RIGHT_DIRECTION = 0.0f;
 
+    private void Awake()
+    {
+        // ピッチングマシンのGameObjectを保持
+        var gameObject = GameObject.Find("Pitching Machine");
+        if (gameObject != null)
+        {
+            pitchingMachine = gameObject.GetComponent<PitchingMachine>();
+        }
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
-        Target target = new Target(collision.gameObject);
-        if (!target.IsHitTarget())
+        // ピッチングマシンのコンポーネントが取得できなかった場合は、ログ表示
+        if (pitchingMachine == null)
         {
+            Debug.Log("Not found!! Pitching Machine is null!!");
             return;
         }
-        hitTarget(target);
+
+        // 対象のGameObjectがターゲットオブジェクトか？
+        Target target = pitchingMachine.FindTarget(collision.gameObject);
+        if (target != null)
+        {
+            // 打つ！
+            hitTarget(target);
+        }
     }
 
     private void hitTarget(Target target)

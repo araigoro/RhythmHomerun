@@ -118,4 +118,24 @@ public class PitchingMachine : MonoBehaviour
 
         return target;
     }
+
+    /// <summary>
+    /// 指定されたGameObjectのターゲットを取得
+    /// </summary>
+    /// <param name="gameObject">対象のGameObject</param>
+    /// <returns>ターゲット(見つからない場合は null)</returns>
+    public Target FindTarget(GameObject gameObject)
+    {
+        // ターゲットプールから、対象のGameObjectを持つターゲットを探す
+        foreach (var target in targetPool)
+        {
+            if (target.TargetGameObject == gameObject)
+            {
+                return target;
+            }
+        }
+
+        // 見つからなかった
+        return null;
+    }
 }
