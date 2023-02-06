@@ -29,20 +29,17 @@ public class PitchingMachine : MonoBehaviour
     /// <summary>
     /// 投げる間隔(単位：フレーム)
     /// </summary>
-    private const int ShotInterval = 2000;
-
-    /// <summary>
-    /// 投げるオブジェクトの速度
-    /// </summary>
-    private const float ShotSpeed = 270;
+    private const int shotInterval = 2000;
 
     /// <summary>
     /// 投げるオブジェクトの角度
     /// </summary>
-    private const float ShotAngle = 30;
+    private const float shotAngle = 30;
 
-
-    private Vector3 STRIKE_POSITION = new Vector3(0, 3, -1) / 10;
+    /// <summary>
+    /// オブジェクトを飛ばす目標地点
+    /// </summary>
+    private Vector3 strikePosition = new Vector3(0, 3, -1) / 10;
 
     private void Awake()
     {
@@ -53,7 +50,7 @@ public class PitchingMachine : MonoBehaviour
     private void Update()
     {
         // 一定間隔で投げる
-        if ((Time.frameCount % ShotInterval) == 0)
+        if ((Time.frameCount % shotInterval) == 0)
         {
             ShotTarget();
         }
@@ -70,9 +67,9 @@ public class PitchingMachine : MonoBehaviour
         if (target != null)
         {
             // 初期位置に設定
-            target.Reposition(pitchingMachine.transform.position);
+            target.Respawn(pitchingMachine.transform.position);
             target.SetDisplay(true);
-            target.MoveParabola(STRIKE_POSITION, ShotAngle, ShotSpeed);
+            target.MoveParabola(strikePosition, shotAngle);
 
             // 投げる音を鳴らす
             AudioSource.PlayClipAtPoint(soundShot, pitchingMachine.transform.position);
@@ -90,11 +87,11 @@ public class PitchingMachine : MonoBehaviour
         targetPool.Clear();
 
         // 登録されているすべてのターゲットプレハブに紐づけた、Targetを生成する
-        for (int index = 0; index < targetPrefabs.Length; index++)
+        for (var index = 0; index < targetPrefabs.Length; index++)
         {
             // ターゲットを生成
             var gameObject = Instantiate(targetPrefabs[index], transform.position, Quaternion.identity);
-            Target target = new Target(gameObject);
+            var target = new Target(gameObject);
             target.SetDisplay(false);
 
             // ターゲットプールに追加

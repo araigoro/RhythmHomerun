@@ -35,7 +35,7 @@ public class BaseballBat : MonoBehaviour
         AudioSource.PlayClipAtPoint(soundHit, transform.position);
         target.ColliderOff();
         Vector3 targetPosition = selectTargetPoint(target);
-        target.MoveParabola(targetPosition, HIT_ANGLE, HIT_POWER);
+        target.MoveParabola(targetPosition, HIT_ANGLE);
     }
 
     private Vector3 selectTargetPoint(Target target)

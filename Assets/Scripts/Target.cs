@@ -5,9 +5,15 @@ using UnityEngine;
 
 public class Target
 {
-    private const string HIT_TARGET = "HitTarget";
+    /// <summary>
+    /// ヒットターゲットのレイヤー名
+    /// </summary>
+    private const string hitTargetLayerName = "HitTarget";
 
-    private const float WAIT_HIDE_TIME = 4.0f;
+    /// <summary>
+    /// 非表示にするまでの時間(単位：秒)
+    /// </summary>
+    private const float aliveSeconds = 4.0f;
 
     /// <summary>
     /// ターゲットプレハブのGameObject
@@ -33,6 +39,10 @@ public class Target
         get { return targetGameObject.activeSelf ? false : true; }
     }
 
+    /// <summary>
+    /// イニシャライザ
+    /// </summary>
+    /// <param name="gameObject">ターゲットのプレハブのGameObject</param>
     public Target(GameObject gameObject)
     {
         targetGameObject = gameObject;
@@ -42,10 +52,15 @@ public class Target
         targetRigitbody = targetGameObject.GetComponent<Rigidbody>();
     }
 
-    public void MoveParabola(Vector3 targetPosition, float angle, float speed)
+    /// <summary>
+    /// オブジェクトを目標地点に飛ばす
+    /// </summary>
+    /// <param name="targetPosition">目標地点</param>
+    /// <param name="angle">角度</param>
+    public void MoveParabola(Vector3 targetPosition, float angle)
     {
-        Vector3 startPosition = targetGameObject.transform.position;
-        Vector3 velocity = CalcVelocity(startPosition, targetPosition, angle);
+        var startPosition = targetGameObject.transform.position;
+        var velocity = CalcVelocity(startPosition, targetPosition, angle);
         targetRigitbody.AddForce(velocity * targetRigitbody.mass, ForceMode.Impulse);
     }
 
@@ -64,30 +79,49 @@ public class Target
         }
     }
 
+    /// <summary>
+    /// 一定時間後にオブジェクトを非表示にするコルーチン
+    /// </summary>
+    /// <returns>IEnumerator</returns>
     public IEnumerator Collect()
     {
-        yield return new WaitForSeconds(WAIT_HIDE_TIME);
+        yield return new WaitForSeconds(aliveSeconds);
 
         targetRigitbody.velocity = Vector3.zero;
         SetDisplay(false);
     }
 
-    public void Reposition(Vector3 targetPosition)
+    /// <summary>
+    /// オブジェクトを初期位置に戻す(リスポーンする)
+    /// </summary>
+    /// <param name="targetPosition"></param>
+    public void Respawn(Vector3 targetPosition)
     {
         targetGameObject.transform.position = targetPosition;
     }
 
+    /// <summary>
+    /// オブジェクトは打てるターゲットオブジェクトか？
+    /// </summary>
+    /// <returns>true: ターゲット / false: 非ターゲット</returns>
     public bool IsHitTarget()
     {
-        return LayerMask.LayerToName(targetGameObject.layer) == HIT_TARGET;
+        return LayerMask.LayerToName(targetGameObject.layer) == hitTargetLayerName;
     }
 
+    /// <summary>
+    /// 始点と終点、打ち上げ角度から、速度を求める
+    /// </summary>
+    /// <param name="startPosition">始点</param>
+    /// <param name="endPosition">終点</param>
+    /// <param name="angle">角度</param>
+    /// <returns>速度</returns>
     private Vector3 CalcVelocity(Vector3 startPosition, Vector3 endPosition, float angle)
     {
-        float rad = angle * Mathf.PI / 180;
-        float diffX = Vector2.Distance(new Vector2(startPosition.x, startPosition.z), new Vector2(endPosition.x, endPosition.z));
-        float diffY = startPosition.y - endPosition.y;
-        float initVelocity = Mathf.Sqrt(-Physics.gravity.y * Mathf.Pow(diffX, 2) / (2 * Mathf.Pow(Mathf.Cos(rad), 2) * (diffX * Mathf.Tan(rad) + diffY)));
+        var rad = angle * Mathf.PI / 180;
+        var diffX = Vector2.Distance(new Vector2(startPosition.x, startPosition.z), new Vector2(endPosition.x, endPosition.z));
+        var diffY = startPosition.y - endPosition.y;
+        var initVelocity = Mathf.Sqrt(-Physics.gravity.y * Mathf.Pow(diffX, 2) / (2 * Mathf.Pow(Mathf.Cos(rad), 2) * (diffX * Mathf.Tan(rad) + diffY)));
 
         if (float.IsNaN(initVelocity))
         {
@@ -97,19 +131,31 @@ public class Target
         return (new Vector3(endPosition.x - startPosition.x, diffX * Mathf.Tan(rad), endPosition.z - startPosition.z).normalized * initVelocity);
     }
 
+    /// <summary>
+    /// コライダーを無効にする
+    /// </summary>
     public void ColliderOff()
     {
         targetCollider.enabled = false;
     }
 
+    /// <summary>
+    /// オブジェクトのZ値が、対象のZ値よりも大きいか？
+    /// </summary>
+    /// <param name="targetPositionZ">対象のZ値</param>
+    /// <returns>true: 大きい / false: 同じか小さい</returns>
     public bool IsLargePositionZ(float targetPositionZ)
     {
         return targetGameObject.transform.position.z > targetPositionZ;
     }
 
+    /// <summary>
+    /// オブジェクトのZ値が、対象のZ値よりも小さいか？
+    /// </summary>
+    /// <param name="targetPositionZ">対象のZ値</param>
+    /// <returns>true: 小さい / false: 同じか大きい</returns>
     internal bool IsSmallPositionZ(float targetPositionZ)
     {
-        Target target = this;
-        return target.targetGameObject.transform.position.z < targetPositionZ;
+        return targetGameObject.transform.position.z < targetPositionZ;
     }
 }
