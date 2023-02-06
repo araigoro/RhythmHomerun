@@ -5,19 +5,34 @@ using UnityEngine;
 
 public class ButtonSwing : MonoBehaviour
 {
-    public GameObject batter;
+    /// <summary>
+    /// バッターのゲームオブジェクト
+    /// </summary>
+    [SerializeField] private GameObject batter;
+
+    /// <summary>
+    /// バッターに設定されているアニメーション
+    /// </summary>
     private Animator animator;
 
-    private const string TriggerSwing = "TriggerSwing";
+    /// <summary>
+    /// スイングアニメーションに遷移するためのトリガー名
+    /// </summary>
+    private const string triggerSwing = "TriggerSwing";
 
     void Start()
     {
+        //コンポーネントを取得して保持しておく
         animator = batter.GetComponent<Animator>();
     }
 
+    /// <summary>
+    /// 画面上の「スイング」ボタンを押下した際に、バッターにスイングさせる
+    /// </summary>
     public void OnClick()
     {
-        animator.SetTrigger(TriggerSwing);
+        //スイングアニメーションに遷移するためのトリガーをオンにする
+        animator.SetTrigger(triggerSwing);
     }
 
 }
