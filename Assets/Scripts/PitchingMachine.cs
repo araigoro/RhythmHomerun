@@ -5,111 +5,111 @@ using UnityEngine;
 public class PitchingMachine : MonoBehaviour
 {
     /// <summary>
-    /// ©g‚ÌƒQ[ƒ€ƒIƒuƒWƒFƒNƒg
+    /// è‡ªèº«ã®ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
     /// </summary>
     [SerializeField] private GameObject pitchingMachine;
-    
+
     /// <summary>
-    /// ƒ^[ƒQƒbƒg‚Æ‚µ‚Ä“Š‚°‚éƒIƒuƒWƒFƒNƒg‚ÌƒvƒŒƒnƒu
+    /// ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã¨ã—ã¦æŠ•ã’ã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ãƒ—ãƒ¬ãƒãƒ–
     /// </summary>
     [SerializeField] private GameObject[] targetPrefabs;
-    
+
     /// <summary>
-    /// ƒVƒ‡ƒbƒg‰¹
+    /// ã‚·ãƒ§ãƒƒãƒˆéŸ³
     /// </summary>
     [SerializeField] private AudioClip soundShot;
 
     /// <summary>
-    /// ƒ^[ƒQƒbƒg•Ûƒe[ƒuƒ‹
+    /// ã‚¿ãƒ¼ã‚²ãƒƒãƒˆä¿æŒãƒ†ãƒ¼ãƒ–ãƒ«
     /// </summary>
     private List<Target> targetPool = new List<Target>();
 
     /// <summary>
-    /// “Š‚°‚éŠÔŠu(’PˆÊFƒtƒŒ[ƒ€)
+    /// æŠ•ã’ã‚‹é–“éš”(å˜ä½ï¼šãƒ•ãƒ¬ãƒ¼ãƒ )
     /// </summary>
     private const int shotInterval = 2000;
 
     /// <summary>
-    /// “Š‚°‚éƒIƒuƒWƒFƒNƒg‚ÌŠp“x
+    /// æŠ•ã’ã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®è§’åº¦
     /// </summary>
     private const float shotAngle = 30;
 
     /// <summary>
-    /// ƒIƒuƒWƒFƒNƒg‚ğ”ò‚Î‚·–Ú•W’n“_
+    /// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’é£›ã°ã™ç›®æ¨™åœ°ç‚¹
     /// </summary>
     private Vector3 strikePosition = new Vector3(0, 3, -1) / 10;
 
     private void Awake()
     {
-        // ‚·‚×‚Ä‚Ìƒ^[ƒQƒbƒgƒvƒŒƒnƒu‚ğ¶¬‚µ‚ÄAƒ^[ƒQƒbƒgƒv[ƒ‹‚É’Ç‰Á‚·‚é
+        // ã™ã¹ã¦ã®ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãƒ—ãƒ¬ãƒãƒ–ã‚’ç”Ÿæˆã—ã¦ã€ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãƒ—ãƒ¼ãƒ«ã«è¿½åŠ ã™ã‚‹
         CreateAllTargetPrefabs();
     }
 
     private void Update()
     {
-        // ˆê’èŠÔŠu‚Å“Š‚°‚é
+        // ä¸€å®šé–“éš”ã§æŠ•ã’ã‚‹
         if ((Time.frameCount % shotInterval) == 0)
         {
             ShotTarget();
         }
     }
-    
+
     /// <summary>
-    /// ƒ‰ƒ“ƒ_ƒ€‚Åƒ^[ƒQƒbƒg‚ğ‘I‚ñ‚Å“Š‚°‚é
+    /// ãƒ©ãƒ³ãƒ€ãƒ ã§ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚’é¸ã‚“ã§æŠ•ã’ã‚‹
     /// </summary>
     private void ShotTarget()
     {
-        // ƒ‰ƒ“ƒ_ƒ€‚ÅŸ‚É“Š‚°‚éƒ^[ƒQƒbƒg‚ğ‘I‚Ô
+        // ãƒ©ãƒ³ãƒ€ãƒ ã§æ¬¡ã«æŠ•ã’ã‚‹ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚’é¸ã¶
         var target = SelectRandomTarget();
-        
+
         if (target != null)
         {
-            // ‰ŠúˆÊ’u‚Éİ’è
+            // åˆæœŸä½ç½®ã«è¨­å®š
             target.Respawn(pitchingMachine.transform.position);
             target.SetDisplay(true);
             target.MoveParabola(strikePosition, shotAngle);
 
-            // “Š‚°‚é‰¹‚ğ–Â‚ç‚·
+            // æŠ•ã’ã‚‹éŸ³ã‚’é³´ã‚‰ã™
             AudioSource.PlayClipAtPoint(soundShot, pitchingMachine.transform.position);
 
-            // ˆê’èŠÔ‚ÅÁ‚·
+            // ä¸€å®šæ™‚é–“ã§æ¶ˆã™
             StartCoroutine(target.Collect());
         }
     }
 
     /// <summary>
-    /// ‚·‚×‚Ä‚Ìƒ^[ƒQƒbƒgƒvƒŒƒnƒu‚ğ¶¬‚µ‚ÄAƒ^[ƒQƒbƒgƒv[ƒ‹‚É’Ç‰Á‚·‚é
+    /// ã™ã¹ã¦ã®ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãƒ—ãƒ¬ãƒãƒ–ã‚’ç”Ÿæˆã—ã¦ã€ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãƒ—ãƒ¼ãƒ«ã«è¿½åŠ ã™ã‚‹
     /// </summary>
     private void CreateAllTargetPrefabs()
     {
         targetPool.Clear();
 
-        // “o˜^‚³‚ê‚Ä‚¢‚é‚·‚×‚Ä‚Ìƒ^[ƒQƒbƒgƒvƒŒƒnƒu‚É•R‚Ã‚¯‚½ATarget‚ğ¶¬‚·‚é
+        // ç™»éŒ²ã•ã‚Œã¦ã„ã‚‹ã™ã¹ã¦ã®ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãƒ—ãƒ¬ãƒãƒ–ã«ç´ã¥ã‘ãŸã€Targetã‚’ç”Ÿæˆã™ã‚‹
         for (var index = 0; index < targetPrefabs.Length; index++)
         {
-            // ƒ^[ƒQƒbƒg‚ğ¶¬
+            // ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚’ç”Ÿæˆ
             var gameObject = Instantiate(targetPrefabs[index], transform.position, Quaternion.identity);
             var target = new Target(gameObject);
             target.SetDisplay(false);
 
-            // ƒ^[ƒQƒbƒgƒv[ƒ‹‚É’Ç‰Á
+            // ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãƒ—ãƒ¼ãƒ«ã«è¿½åŠ 
             targetPool.Add(target);
         }
     }
 
     /// <summary>
-    /// ”ñ•\¦‚Ìƒ^[ƒQƒbƒg‚Ì’†‚©‚çƒ‰ƒ“ƒ_ƒ€‚É‘I‚Ô
+    /// éè¡¨ç¤ºã®ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã®ä¸­ã‹ã‚‰ãƒ©ãƒ³ãƒ€ãƒ ã«é¸ã¶
     /// </summary>
-    /// <returns>ƒ^[ƒQƒbƒg(‘I‚×‚È‚©‚Á‚½ê‡‚Ínull)</returns>
+    /// <returns>ã‚¿ãƒ¼ã‚²ãƒƒãƒˆ(é¸ã¹ãªã‹ã£ãŸå ´åˆã¯null)</returns>
     private Target SelectRandomTarget()
     {
-        // –³ŒÀƒ‹[ƒv‚É‚È‚ç‚È‚¢‚æ‚¤‚É‘Îˆ
+        // ç„¡é™ãƒ«ãƒ¼ãƒ—ã«ãªã‚‰ãªã„ã‚ˆã†ã«å¯¾å‡¦
         if (targetPool.Count == 0)
         {
             return null;
         }
 
-        // ƒ‰ƒ“ƒ_ƒ€‚É‘I‚Ô
+        // ãƒ©ãƒ³ãƒ€ãƒ ã«é¸ã¶
         Target target;
         do
         {
@@ -120,13 +120,13 @@ public class PitchingMachine : MonoBehaviour
     }
 
     /// <summary>
-    /// w’è‚³‚ê‚½GameObject‚Ìƒ^[ƒQƒbƒg‚ğæ“¾
+    /// æŒ‡å®šã•ã‚ŒãŸGameObjectã®ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚’å–å¾—
     /// </summary>
-    /// <param name="gameObject">‘ÎÛ‚ÌGameObject</param>
-    /// <returns>ƒ^[ƒQƒbƒg(Œ©‚Â‚©‚ç‚È‚¢ê‡‚Í null)</returns>
+    /// <param name="gameObject">å¯¾è±¡ã®GameObject</param>
+    /// <returns>ã‚¿ãƒ¼ã‚²ãƒƒãƒˆ(è¦‹ã¤ã‹ã‚‰ãªã„å ´åˆã¯ null)</returns>
     public Target FindTarget(GameObject gameObject)
     {
-        // ƒ^[ƒQƒbƒgƒv[ƒ‹‚©‚çA‘ÎÛ‚ÌGameObject‚ğ‚Âƒ^[ƒQƒbƒg‚ğ’T‚·
+        // ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãƒ—ãƒ¼ãƒ«ã‹ã‚‰ã€å¯¾è±¡ã®GameObjectã‚’æŒã¤ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚’æ¢ã™
         foreach (var target in targetPool)
         {
             if (target.TargetGameObject == gameObject)
@@ -135,7 +135,7 @@ public class PitchingMachine : MonoBehaviour
             }
         }
 
-        // Œ©‚Â‚©‚ç‚È‚©‚Á‚½
+        // è¦‹ã¤ã‹ã‚‰ãªã‹ã£ãŸ
         return null;
     }
 }

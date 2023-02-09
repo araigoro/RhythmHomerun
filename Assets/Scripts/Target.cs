@@ -4,33 +4,33 @@ using UnityEngine;
 public class Target
 {
     /// <summary>
-    /// ƒqƒbƒgƒ^[ƒQƒbƒg‚ÌƒŒƒCƒ„[–¼
+    /// ãƒ’ãƒƒãƒˆã‚¿ãƒ¼ã‚²ãƒƒãƒˆã®ãƒ¬ã‚¤ãƒ¤ãƒ¼å
     /// </summary>
     private const string hitTargetLayerName = "HitTarget";
 
     /// <summary>
-    /// ”ñ•\¦‚É‚·‚é‚Ü‚Å‚ÌŠÔ(’PˆÊF•b)
+    /// éè¡¨ç¤ºã«ã™ã‚‹ã¾ã§ã®æ™‚é–“(å˜ä½ï¼šç§’)
     /// </summary>
     private const float aliveSeconds = 4.0f;
 
     /// <summary>
-    /// ƒ^[ƒQƒbƒgƒvƒŒƒnƒu‚ÌGameObject
+    /// ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãƒ—ãƒ¬ãƒãƒ–ã®GameObject
     /// </summary>
     public GameObject TargetGameObject { get; private set; }
 
     /// <summary>
-    /// ƒ^[ƒQƒbƒg‚ÌCollider
-    /// ¦ƒ^[ƒQƒbƒg‚É‚æ‚Á‚ÄƒRƒ‰ƒCƒ_[‚Ìí—Ş‚ªˆÙ‚È‚é‚Ì‚ÅAColliderŒ^‚Å’T‚µ‚Ä•Û‚µ‚Ä‚¨‚­
+    /// ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã®Collider
+    /// â€»ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã«ã‚ˆã£ã¦ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®ç¨®é¡ãŒç•°ãªã‚‹ã®ã§ã€Colliderå‹ã§æ¢ã—ã¦ä¿æŒã—ã¦ãŠã
     /// </summary>
     private Collider targetCollider;
 
     /// <summary>
-    /// ƒ^[ƒQƒbƒg‚ÌRigitbody
+    /// ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã®Rigitbody
     /// </summary>
     private Rigidbody targetRigitbody;
 
     /// <summary>
-    /// •\¦’†‚©H
+    /// è¡¨ç¤ºä¸­ã‹ï¼Ÿ
     /// </summary>
     public bool IsDisplay
     {
@@ -38,23 +38,23 @@ public class Target
     }
 
     /// <summary>
-    /// ƒCƒjƒVƒƒƒ‰ƒCƒU
+    /// ã‚¤ãƒ‹ã‚·ãƒ£ãƒ©ã‚¤ã‚¶
     /// </summary>
-    /// <param name="gameObject">ƒ^[ƒQƒbƒg‚ÌƒvƒŒƒnƒu‚ÌGameObject</param>
+    /// <param name="gameObject">ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã®ãƒ—ãƒ¬ãƒãƒ–ã®GameObject</param>
     public Target(GameObject gameObject)
     {
         TargetGameObject = gameObject;
 
-        // GetComponent‚Íd‚¢‚Ì‚ÅAƒRƒ“ƒ|[ƒlƒ“ƒg‚ğæ“¾‚µ‚Ä•Û‚µ‚Ä‚¨‚­
+        // GetComponentã¯é‡ã„ã®ã§ã€ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’å–å¾—ã—ã¦ä¿æŒã—ã¦ãŠã
         targetCollider = TargetGameObject.GetComponent<Collider>();
         targetRigitbody = TargetGameObject.GetComponent<Rigidbody>();
     }
 
     /// <summary>
-    /// ƒIƒuƒWƒFƒNƒg‚ğ–Ú•W’n“_‚É”ò‚Î‚·
+    /// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ç›®æ¨™åœ°ç‚¹ã«é£›ã°ã™
     /// </summary>
-    /// <param name="targetPosition">–Ú•W’n“_</param>
-    /// <param name="angle">Šp“x</param>
+    /// <param name="targetPosition">ç›®æ¨™åœ°ç‚¹</param>
+    /// <param name="angle">è§’åº¦</param>
     public void MoveParabola(Vector3 targetPosition, float angle)
     {
         var startPosition = TargetGameObject.transform.position;
@@ -63,22 +63,22 @@ public class Target
     }
 
     /// <summary>
-    /// •\¦^”ñ•\¦‚ğİ’è‚·‚é
+    /// è¡¨ç¤ºï¼éè¡¨ç¤ºã‚’è¨­å®šã™ã‚‹
     /// </summary>
-    /// <param name="isDisplay">true:•\¦ / false:”ñ•\¦</param>
+    /// <param name="isDisplay">true:è¡¨ç¤º / false:éè¡¨ç¤º</param>
     public void SetDisplay(bool isDisplay)
     {
         TargetGameObject.SetActive(isDisplay);
 
         if (isDisplay == true)
         {
-            // •\¦
+            // è¡¨ç¤º
             targetCollider.enabled = true;
         }
     }
 
     /// <summary>
-    /// ˆê’èŠÔŒã‚ÉƒIƒuƒWƒFƒNƒg‚ğ”ñ•\¦‚É‚·‚éƒRƒ‹[ƒ`ƒ“
+    /// ä¸€å®šæ™‚é–“å¾Œã«ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’éè¡¨ç¤ºã«ã™ã‚‹ã‚³ãƒ«ãƒ¼ãƒãƒ³
     /// </summary>
     /// <returns>IEnumerator</returns>
     public IEnumerator Collect()
@@ -90,7 +90,7 @@ public class Target
     }
 
     /// <summary>
-    /// ƒIƒuƒWƒFƒNƒg‚ğ‰ŠúˆÊ’u‚É–ß‚·(ƒŠƒXƒ|[ƒ“‚·‚é)
+    /// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’åˆæœŸä½ç½®ã«æˆ»ã™(ãƒªã‚¹ãƒãƒ¼ãƒ³ã™ã‚‹)
     /// </summary>
     /// <param name="targetPosition"></param>
     public void Respawn(Vector3 targetPosition)
@@ -99,21 +99,21 @@ public class Target
     }
 
     /// <summary>
-    /// ƒIƒuƒWƒFƒNƒg‚Í‘Å‚Ä‚éƒ^[ƒQƒbƒgƒIƒuƒWƒFƒNƒg‚©H
+    /// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã¯æ‰“ã¦ã‚‹ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‹ï¼Ÿ
     /// </summary>
-    /// <returns>true: ƒ^[ƒQƒbƒg / false: ”ñƒ^[ƒQƒbƒg</returns>
+    /// <returns>true: ã‚¿ãƒ¼ã‚²ãƒƒãƒˆ / false: éã‚¿ãƒ¼ã‚²ãƒƒãƒˆ</returns>
     public bool IsHitTarget()
     {
         return LayerMask.LayerToName(TargetGameObject.layer) == hitTargetLayerName;
     }
 
     /// <summary>
-    /// n“_‚ÆI“_A‘Å‚¿ã‚°Šp“x‚©‚çA‘¬“x‚ğ‹‚ß‚é
+    /// å§‹ç‚¹ã¨çµ‚ç‚¹ã€æ‰“ã¡ä¸Šã’è§’åº¦ã‹ã‚‰ã€é€Ÿåº¦ã‚’æ±‚ã‚ã‚‹
     /// </summary>
-    /// <param name="startPosition">n“_</param>
-    /// <param name="endPosition">I“_</param>
-    /// <param name="angle">Šp“x</param>
-    /// <returns>‘¬“x</returns>
+    /// <param name="startPosition">å§‹ç‚¹</param>
+    /// <param name="endPosition">çµ‚ç‚¹</param>
+    /// <param name="angle">è§’åº¦</param>
+    /// <returns>é€Ÿåº¦</returns>
     private Vector3 CalcVelocity(Vector3 startPosition, Vector3 endPosition, float angle)
     {
         var rad = angle * Mathf.PI / 180;
@@ -130,7 +130,7 @@ public class Target
     }
 
     /// <summary>
-    /// ƒRƒ‰ƒCƒ_[‚ğ–³Œø‚É‚·‚é
+    /// ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã‚’ç„¡åŠ¹ã«ã™ã‚‹
     /// </summary>
     public void ColliderOff()
     {
@@ -138,20 +138,20 @@ public class Target
     }
 
     /// <summary>
-    /// ƒIƒuƒWƒFƒNƒg‚ÌZ’l‚ªA‘ÎÛ‚ÌZ’l‚æ‚è‚à‘å‚«‚¢‚©H
+    /// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®Zå€¤ãŒã€å¯¾è±¡ã®Zå€¤ã‚ˆã‚Šã‚‚å¤§ãã„ã‹ï¼Ÿ
     /// </summary>
-    /// <param name="targetPositionZ">‘ÎÛ‚ÌZ’l</param>
-    /// <returns>true: ‘å‚«‚¢ / false: “¯‚¶‚©¬‚³‚¢</returns>
+    /// <param name="targetPositionZ">å¯¾è±¡ã®Zå€¤</param>
+    /// <returns>true: å¤§ãã„ / false: åŒã˜ã‹å°ã•ã„</returns>
     public bool IsLargePositionZ(float targetPositionZ)
     {
         return TargetGameObject.transform.position.z > targetPositionZ;
     }
 
     /// <summary>
-    /// ƒIƒuƒWƒFƒNƒg‚ÌZ’l‚ªA‘ÎÛ‚ÌZ’l‚æ‚è‚à¬‚³‚¢‚©H
+    /// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®Zå€¤ãŒã€å¯¾è±¡ã®Zå€¤ã‚ˆã‚Šã‚‚å°ã•ã„ã‹ï¼Ÿ
     /// </summary>
-    /// <param name="targetPositionZ">‘ÎÛ‚ÌZ’l</param>
-    /// <returns>true: ¬‚³‚¢ / false: “¯‚¶‚©‘å‚«‚¢</returns>
+    /// <param name="targetPositionZ">å¯¾è±¡ã®Zå€¤</param>
+    /// <returns>true: å°ã•ã„ / false: åŒã˜ã‹å¤§ãã„</returns>
     internal bool IsSmallPositionZ(float targetPositionZ)
     {
         return TargetGameObject.transform.position.z < targetPositionZ;
