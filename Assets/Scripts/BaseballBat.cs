@@ -89,7 +89,7 @@ public class BaseballBat : MonoBehaviour
             // 打つ！
             HitTarget(target);
 
-            //サブカメラに切り替える
+            //フォローカメラに切り替える
             switchCamera.SwitchFollowCamera(target);
         }
     }
