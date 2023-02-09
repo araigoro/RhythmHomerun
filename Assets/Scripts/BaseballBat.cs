@@ -11,9 +11,19 @@ public class BaseballBat : MonoBehaviour
     [SerializeField] private AudioClip soundHit;
 
     /// <summary>
-    /// ピッチングマシンのGameObject
+    /// Switch Cameraのオブジェクト
+    /// </summary>
+    [SerializeField] private GameObject switchCameraObj;
+
+    /// <summary>
+    /// ピッチングマシンクラス
     /// </summary>
     private PitchingMachine pitchingMachine;
+
+    /// <summary>
+    /// カメラ切替クラス
+    /// </summary>
+    private SwitchCamera switchCamera;
 
     /// <summary>
     /// 打ったオブジェクトを飛ばす目標地点（レフト方向）
@@ -52,12 +62,15 @@ public class BaseballBat : MonoBehaviour
 
     private void Awake()
     {
-        // ピッチングマシンのGameObjectを保持
+        //ピッチングマシンクラスを保持
         var gameObject = GameObject.Find("Pitching Machine");
         if (gameObject != null)
         {
             pitchingMachine = gameObject.GetComponent<PitchingMachine>();
         }
+
+        //カメラ切替クラスを保持
+        switchCamera = switchCameraObj.GetComponent<SwitchCamera>();
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -75,6 +88,9 @@ public class BaseballBat : MonoBehaviour
         {
             // 打つ！
             HitTarget(target);
+
+            //サブカメラに切り替える
+            switchCamera.SwitchFollowCamera(target);
         }
     }
 
