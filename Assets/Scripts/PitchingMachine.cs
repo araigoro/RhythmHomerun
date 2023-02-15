@@ -33,12 +33,25 @@ public class PitchingMachine : MonoBehaviour
     /// </summary>
     private Vector3 strikePosition = new Vector3(0, 3, -1) / 10;
 
+    private Animator animator;
+
+    private const string TriggerPitching = "TriggerPitching";
+
+
+    private void Awake()
+    {
+        animator = pitchingMachine.GetComponent<Animator>();
+    }
+
     private void Update()
     {
         // 一定間隔で投げる
         if ((Time.frameCount % shotInterval) == 0)
         {
             Debug.Log("マシーン内のtarget:" + target);
+            animator.SetTrigger(TriggerPitching);
+
+
             ShotTarget();
         }
     }
