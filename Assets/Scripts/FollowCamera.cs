@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using UnityEngine;
+using UniRx;
 
 public class FollowCamera
 {
@@ -18,6 +20,8 @@ public class FollowCamera
     /// </summary>
     private const float followSpeed = 0.02f;
 
+    private const float followInterval = 0.01f;
+
     /// <summary>
     /// イニシャライザ
     /// </summary>
@@ -27,16 +31,22 @@ public class FollowCamera
         followCamera = gameObject;
     }
 
+    private void lookTarget()
+    {
+        var relativePos = targetObj.transform.position - followCamera.transform.position;
+        var rotation = Quaternion.LookRotation(relativePos);
+        followCamera.transform.rotation = Quaternion.Slerp(followCamera.transform.rotation, rotation, followSpeed);
+    }
+
     /// <summary>
     /// ターゲットをカメラで追う
     /// </summary>
     /// <param name="target">対象のターゲット</param>
     public void FollowTarget(Target target)
     {
-        // targetObj=target.getObj();
-        // var relativePos = targetObj.transform.position - this.transform.position;
-        // Quaternion rotation = Quaternion.LookRotation(relativePos);
-        // transform.rotation = Quaternion.Slerp(this.transform.rotation, rotation, followSpeed);
+        targetObj = target.GetObj();
+        Observable.Interval(TimeSpan.FromSeconds(followInterval))
+        .Subscribe(_ => lookTarget());
     }
 
     /// <summary>

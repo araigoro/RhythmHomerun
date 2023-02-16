@@ -2,28 +2,26 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UniRx;
 
 public class BaseballBat : MonoBehaviour
 {
+    /// <summary>
+    /// ターゲットマネージャーのオブジェクト
+    /// </summary>
+    [SerializeField] private GameObject targetManagerObj;
+
     /// <summary>
     /// 打撃音
     /// </summary>
     [SerializeField] private AudioClip soundHit;
 
     /// <summary>
-    /// Switch Cameraのオブジェクト
+    /// ターゲットマネージャーのクラス
     /// </summary>
-    [SerializeField] private GameObject switchCameraObj;
+    private TargetManager targetManager;
 
-    /// <summary>
-    /// ピッチングマシンクラス
-    /// </summary>
-    private PitchingMachine pitchingMachine;
-
-    /// <summary>
-    /// カメラ切替クラス
-    /// </summary>
-    private SwitchCamera switchCamera;
+    private Target activeTarget;
 
     /// <summary>
     /// 打ったオブジェクトを飛ばす目標地点（レフト方向）
@@ -31,7 +29,7 @@ public class BaseballBat : MonoBehaviour
     private readonly Vector3[] homerunPointLeft = { new Vector3(-27, 4, 35), new Vector3(-25, 4, 43), new Vector3(-20, 4, 47) };
 
     /// <summary>
-    /// 打ったオブジェクトを飛ばす目標地点（センタ0方向）
+    /// 打ったオブジェクトを飛ばす目標地点（センター方向）
     /// </summary>
     private readonly Vector3[] homerunPointCenter = { new Vector3(0, 5, 45), new Vector3(-10, 4, 40), new Vector3(7, 3, 48) };
 
@@ -60,37 +58,22 @@ public class BaseballBat : MonoBehaviour
     /// </summary>
     private const float borderRightDirection = 0.0f;
 
-    private void Awake()
+    private void Start()
     {
-        //ピッチングマシンクラスを保持
-        var gameObject = GameObject.Find("Pitching Machine");
-        if (gameObject != null)
-        {
-            pitchingMachine = gameObject.GetComponent<PitchingMachine>();
-        }
+        targetManager = targetManagerObj.GetComponent<TargetManager>();
 
-        //カメラ切替クラスを保持
-        switchCamera = switchCameraObj.GetComponent<SwitchCamera>();
+        targetManager.ObserveEveryValueChanged(manager => manager.ActiveTarget)
+        .Where(target => target != null)
+        .Subscribe(target => activeTarget = target);
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        // ピッチングマシンのコンポーネントが取得できなかった場合は、ログ表示
-        if (pitchingMachine == null)
-        {
-            Debug.Log("Not found!! Pitching Machine is null!!");
-            return;
-        }
-
         // 対象のGameObjectがターゲットオブジェクトか？
-        Target target = pitchingMachine.FindTarget(collision.gameObject);
-        if (target != null)
+        if (activeTarget.IsSameObj(collision.gameObject))
         {
             // 打つ！
-            HitTarget(target);
-
-            //フォローカメラに切り替える
-            switchCamera.SwitchFollowCamera(target);
+            HitTarget(activeTarget);
         }
     }
 
@@ -100,16 +83,18 @@ public class BaseballBat : MonoBehaviour
     /// <param name="target">対象のターゲットオブジェクト</param>
     private void HitTarget(Target target)
     {
-        //打撃音を鳴らす
-        AudioSource.PlayClipAtPoint(soundHit, transform.position);
-
         //予期せぬ衝突を防ぐためにコライダーを無効にする
         target.ColliderOff();
 
         //ターゲットオブジェクトを飛ばす先を取得
         var targetPosition = SelectTargetPoint(target);
 
-        //ターゲットオブジェクトを放物線上に飛ばす
+        target.Hit();
+
+        //打撃音を鳴らす
+        AudioSource.PlayClipAtPoint(soundHit, transform.position);
+
+        //ターゲットオブジェクトを放物線状に飛ばす
         target.MoveParabola(targetPosition, hitAngle);
     }
 

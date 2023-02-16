@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using UnityEngine;
+using UniRx;
 
 public class Target
 {
@@ -14,7 +16,7 @@ public class Target
     private const float aliveSeconds = 4.0f;
 
     /// <summary>
-    /// ターゲットプレハブのGameObject
+    /// ターゲットのGameObject
     /// </summary>
     public GameObject TargetGameObject { get; private set; }
 
@@ -28,6 +30,17 @@ public class Target
     /// ターゲットのRigitbody
     /// </summary>
     private Rigidbody targetRigitbody;
+
+    private Vector3 homerunPoint;
+
+    private class State
+    {
+        public const int Stay = 0;
+        public const int Hit = 1;
+        public const int StandIn = 2;
+    }
+
+    public int Status;
 
     /// <summary>
     /// 表示中か？
@@ -152,8 +165,50 @@ public class Target
     /// </summary>
     /// <param name="targetPositionZ">対象のZ値</param>
     /// <returns>true: 小さい / false: 同じか大きい</returns>
-    internal bool IsSmallPositionZ(float targetPositionZ)
+    public bool IsSmallPositionZ(float targetPositionZ)
     {
         return TargetGameObject.transform.position.z < targetPositionZ;
+    }
+
+    public void Hit()
+    {
+        Status = State.Hit;
+    }
+
+    public bool IsSameObj(GameObject gameObject)
+    {
+        return TargetGameObject == gameObject;
+    }
+
+    public bool IsHit()
+    {
+        return Status == State.Hit;
+    }
+
+    public GameObject GetObj()
+    {
+        return TargetGameObject;
+    }
+
+    public bool IsStandIn()
+    {
+        return Status == State.StandIn;
+    }
+
+    public void RegisterHomerunPoint(Vector3 targetPosition)
+    {
+        homerunPoint = targetPosition;
+    }
+
+    public void StandIn()
+    {
+        Observable.Interval(TimeSpan.FromSeconds(0.001f))
+        .Where(_ => TargetGameObject.transform.position == homerunPoint)
+        .Subscribe(_ => Status = State.StandIn);
+    }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        Debug.Log("OK");
     }
 }
