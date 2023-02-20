@@ -38,7 +38,7 @@ public class PitchingMachine : MonoBehaviour
         // 一定間隔で投げる
         if ((Time.frameCount % shotInterval) == 0)
         {
-            Debug.Log("マシーンにtargetあるか:" + target);
+            Debug.Log("マシーン内のtarget:" + target);
             ShotTarget();
         }
     }
@@ -51,15 +51,12 @@ public class PitchingMachine : MonoBehaviour
         if (target != null)
         {
             // 初期位置に設定
-            target.Respawn(pitchingMachine.transform.position);
             target.SetActive(true);
+            target.Respawn(pitchingMachine.transform.position);
             target.MoveParabola(strikePosition, shotAngle);
 
             // 投げる音を鳴らす
             AudioSource.PlayClipAtPoint(soundShot, pitchingMachine.transform.position);
-
-            // 一定時間で消す
-            // StartCoroutine(targetObj.Collect());
 
             LoseTarget();
 
