@@ -3,22 +3,12 @@ using System.Collections;
 using UnityEngine;
 using UniRx;
 
-public class Target
+public class Target : MonoBehaviour
 {
-    /// <summary>
-    /// ヒットターゲットのレイヤー名
-    /// </summary>
-    private const string hitTargetLayerName = "HitTarget";
-
     /// <summary>
     /// 非表示にするまでの時間(単位：秒)
     /// </summary>
     private const float aliveSeconds = 4.0f;
-
-    /// <summary>
-    /// ターゲットのGameObject
-    /// </summary>
-    public GameObject TargetGameObject { get; private set; }
 
     /// <summary>
     /// ターゲットのCollider
@@ -31,36 +21,33 @@ public class Target
     /// </summary>
     private Rigidbody targetRigitbody;
 
-    private Vector3 homerunPoint;
-
     private class State
     {
         public const int Stay = 0;
-        public const int Hit = 1;
-        public const int StandIn = 2;
+        public const int WaitingShot = 1;
+        public const int Hit = 2;
+        public const int StandIn = 3;
     }
 
-    public int Status;
-
-    /// <summary>
-    /// 表示中か？
-    /// </summary>
-    public bool IsDisplay
-    {
-        get { return TargetGameObject.activeSelf ? false : true; }
-    }
+    [System.NonSerialized] public int Status = State.Stay;
 
     /// <summary>
     /// イニシャライザ
     /// </summary>
     /// <param name="gameObject">ターゲットのプレハブのGameObject</param>
-    public Target(GameObject gameObject)
-    {
-        TargetGameObject = gameObject;
 
-        // GetComponentは重いので、コンポーネントを取得して保持しておく
-        targetCollider = TargetGameObject.GetComponent<Collider>();
-        targetRigitbody = TargetGameObject.GetComponent<Rigidbody>();
+    private void Awake()
+    {
+        targetCollider = this.gameObject.GetComponent<Collider>();
+        targetRigitbody = this.gameObject.GetComponent<Rigidbody>();
+    }
+
+    private void Update()
+    {
+        if (this.gameObject.transform.position.z >= 33)
+        {
+            Homerun();
+        }
     }
 
     /// <summary>
@@ -70,7 +57,7 @@ public class Target
     /// <param name="angle">角度</param>
     public void MoveParabola(Vector3 targetPosition, float angle)
     {
-        var startPosition = TargetGameObject.transform.position;
+        var startPosition = this.gameObject.transform.position;
         var velocity = CalcVelocity(startPosition, targetPosition, angle);
         targetRigitbody.AddForce(velocity * targetRigitbody.mass, ForceMode.Impulse);
     }
@@ -78,28 +65,10 @@ public class Target
     /// <summary>
     /// 表示／非表示を設定する
     /// </summary>
-    /// <param name="isDisplay">true:表示 / false:非表示</param>
-    public void SetDisplay(bool isDisplay)
+    /// <param name="isActive">true:表示 / false:非表示</param>
+    public void SetActive(bool isActive)
     {
-        TargetGameObject.SetActive(isDisplay);
-
-        if (isDisplay == true)
-        {
-            // 表示
-            targetCollider.enabled = true;
-        }
-    }
-
-    /// <summary>
-    /// 一定時間後にオブジェクトを非表示にするコルーチン
-    /// </summary>
-    /// <returns>IEnumerator</returns>
-    public IEnumerator Collect()
-    {
-        yield return new WaitForSeconds(aliveSeconds);
-
-        targetRigitbody.velocity = Vector3.zero;
-        SetDisplay(false);
+        this.gameObject.SetActive(isActive);
     }
 
     /// <summary>
@@ -108,16 +77,7 @@ public class Target
     /// <param name="targetPosition"></param>
     public void Respawn(Vector3 targetPosition)
     {
-        TargetGameObject.transform.position = targetPosition;
-    }
-
-    /// <summary>
-    /// オブジェクトは打てるターゲットオブジェクトか？
-    /// </summary>
-    /// <returns>true: ターゲット / false: 非ターゲット</returns>
-    public bool IsHitTarget()
-    {
-        return LayerMask.LayerToName(TargetGameObject.layer) == hitTargetLayerName;
+        this.transform.position = targetPosition;
     }
 
     /// <summary>
@@ -157,7 +117,7 @@ public class Target
     /// <returns>true: 大きい / false: 同じか小さい</returns>
     public bool IsLargePositionZ(float targetPositionZ)
     {
-        return TargetGameObject.transform.position.z > targetPositionZ;
+        return this.gameObject.transform.position.z > targetPositionZ;
     }
 
     /// <summary>
@@ -167,7 +127,7 @@ public class Target
     /// <returns>true: 小さい / false: 同じか大きい</returns>
     public bool IsSmallPositionZ(float targetPositionZ)
     {
-        return TargetGameObject.transform.position.z < targetPositionZ;
+        return this.gameObject.transform.position.z < targetPositionZ;
     }
 
     public void Hit()
@@ -177,7 +137,7 @@ public class Target
 
     public bool IsSameObj(GameObject gameObject)
     {
-        return TargetGameObject == gameObject;
+        return this.gameObject == gameObject;
     }
 
     public bool IsHit()
@@ -187,7 +147,7 @@ public class Target
 
     public GameObject GetObj()
     {
-        return TargetGameObject;
+        return this.gameObject;
     }
 
     public bool IsStandIn()
@@ -195,20 +155,28 @@ public class Target
         return Status == State.StandIn;
     }
 
-    public void RegisterHomerunPoint(Vector3 targetPosition)
+    public bool IsWaitingShot()
     {
-        homerunPoint = targetPosition;
+        return Status == State.WaitingShot;
     }
 
-    public void StandIn()
+    public void WaitingShot()
     {
-        Observable.Interval(TimeSpan.FromSeconds(0.001f))
-        .Where(_ => TargetGameObject.transform.position == homerunPoint)
-        .Subscribe(_ => Status = State.StandIn);
+        Status = State.WaitingShot;
     }
 
-    private void OnCollisionEnter(Collision other)
+    public void Homerun()
     {
-        Debug.Log("OK");
+        Status = State.StandIn;
+    }
+
+    public void Stay()
+    {
+        Status = State.Stay;
+    }
+
+    public bool IsStay()
+    {
+        return Status == State.Stay;
     }
 }

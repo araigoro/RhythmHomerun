@@ -7,21 +7,9 @@ using UniRx;
 public class BaseballBat : MonoBehaviour
 {
     /// <summary>
-    /// ターゲットマネージャーのオブジェクト
-    /// </summary>
-    [SerializeField] private GameObject targetManagerObj;
-
-    /// <summary>
     /// 打撃音
     /// </summary>
     [SerializeField] private AudioClip soundHit;
-
-    /// <summary>
-    /// ターゲットマネージャーのクラス
-    /// </summary>
-    private TargetManager targetManager;
-
-    private Target activeTarget;
 
     /// <summary>
     /// 打ったオブジェクトを飛ばす目標地点（レフト方向）
@@ -44,11 +32,6 @@ public class BaseballBat : MonoBehaviour
     private const float hitAngle = 45;
 
     /// <summary>
-    /// オブジェクトを打つ強さ
-    /// </summary>
-    private const float hitPower = 1.0f;
-
-    /// <summary>
     ///　打ったオブジェクトをレフトに飛ばすかどうかの基準値
     /// </summary>
     private const float borderLeftDirection = 0.2f;
@@ -58,23 +41,22 @@ public class BaseballBat : MonoBehaviour
     /// </summary>
     private const float borderRightDirection = 0.0f;
 
-    private void Start()
-    {
-        targetManager = targetManagerObj.GetComponent<TargetManager>();
-
-        targetManager.ObserveEveryValueChanged(manager => manager.ActiveTarget)
-        .Where(target => target != null)
-        .Subscribe(target => activeTarget = target);
-    }
+    private Target activeTarget;
 
     private void OnCollisionEnter(Collision collision)
     {
         // 対象のGameObjectがターゲットオブジェクトか？
+        // 違和感
         if (activeTarget.IsSameObj(collision.gameObject))
         {
             // 打つ！
             HitTarget(activeTarget);
         }
+    }
+
+    public void RegisterTarget(Target target)
+    {
+        activeTarget = target;
     }
 
     /// <summary>
@@ -96,6 +78,8 @@ public class BaseballBat : MonoBehaviour
 
         //ターゲットオブジェクトを放物線状に飛ばす
         target.MoveParabola(targetPosition, hitAngle);
+
+        activeTarget = null;
     }
 
     /// <summary>
@@ -152,6 +136,4 @@ public class BaseballBat : MonoBehaviour
     {
         return target.IsSmallPositionZ(borderRightDirection);
     }
-
-
 }

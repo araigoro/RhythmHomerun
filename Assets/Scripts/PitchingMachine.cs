@@ -18,8 +18,6 @@ public class PitchingMachine : MonoBehaviour
 
     private Target target;
 
-    public ReactiveProperty<int> i = new ReactiveProperty<int>();
-
     /// <summary>
     /// 投げる間隔(単位：フレーム)
     /// </summary>
@@ -40,28 +38,36 @@ public class PitchingMachine : MonoBehaviour
         // 一定間隔で投げる
         if ((Time.frameCount % shotInterval) == 0)
         {
+            Debug.Log("マシーンにtargetあるか:" + target);
             ShotTarget();
         }
     }
 
     /// <summary>
-    /// ランダムでターゲットを取得して投げる
+    /// 所持しているターゲットを投げる
     /// </summary>
     private void ShotTarget()
     {
         if (target != null)
         {
             // 初期位置に設定
+            target.SetActive(true);
             target.Respawn(pitchingMachine.transform.position);
-            target.SetDisplay(true);
             target.MoveParabola(strikePosition, shotAngle);
 
             // 投げる音を鳴らす
             AudioSource.PlayClipAtPoint(soundShot, pitchingMachine.transform.position);
 
             // 一定時間で消す
-            StartCoroutine(target.Collect());
+            // StartCoroutine(targetObj.Collect());
+
+            LoseTarget();
         }
+    }
+
+    private void LoseTarget()
+    {
+        target = null;
     }
 
     public void Add(Target target)

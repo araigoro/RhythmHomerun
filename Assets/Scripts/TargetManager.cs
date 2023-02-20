@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UniRx;
+using UniRx.Triggers;
 using System;
 
 public class TargetManager : MonoBehaviour
@@ -13,33 +14,87 @@ public class TargetManager : MonoBehaviour
 
     [SerializeField] private GameObject pitchingMachineObj;
 
+    [SerializeField] private GameObject baseballBatObj;
+
+    [SerializeField] private GameObject stagingManagerObj;
+
+    [SerializeField] private GameObject fieldGround;
+
     /// <summary>
     /// ターゲット保持テーブル
     /// </summary>
     private List<Target> targetPool = new List<Target>();
 
-    public Target ActiveTarget;
+    private Target activeTarget;
 
     private PitchingMachine pitchingMachine;
 
+    private BaseballBat baseballBat;
+
+    private StagingManager stagingManager;
+
     private void Awake()
     {
-
         pitchingMachine = pitchingMachineObj.GetComponent<PitchingMachine>();
+        baseballBat = baseballBatObj.GetComponent<BaseballBat>();
+        stagingManager = stagingManagerObj.GetComponent<StagingManager>();
 
         // すべてのターゲットプレハブを生成して、ターゲットプールに追加する
         CreateAllTargetPrefabs();
 
-        ActiveTarget = SelectRandomTarget();
+        SelectRandomActiveTarget();
 
-        ActiveTarget.ObserveEveryValueChanged(target => target)
-        .Where(target => target != null)
-        .Subscribe(target => pitchingMachine.Add(target));
+        activeTarget.ObserveEveryValueChanged(target => target)
+        .Where(target => target.IsWaitingShot())
+        .Subscribe(target =>
+        {
+            pitchingMachine.Add(target);
+            Debug.Log("マシーンadd");
+            baseballBat.RegisterTarget(target);
+        });
+
+        var changedTargetStatus = activeTarget.ObserveEveryValueChanged(target => target.Status);
+
+        changedTargetStatus
+        .Where(_ => activeTarget.IsHit())
+        .Subscribe(_ => stagingManager.SwitchFollowCamera(activeTarget));
+
+        changedTargetStatus
+        .Where(_ => activeTarget.IsStandIn())
+        .Subscribe(_ =>
+        {
+            stagingManager.GenerateHomerunEffect(activeTarget);
+            activeTarget.Stay();
+        });
+
+        activeTarget.OnCollisionEnterAsObservable()
+        .Where(collision => collision.gameObject == fieldGround)
+        .Subscribe(_ => activeTarget.Stay());
+
+        changedTargetStatus
+        .Where(_ => activeTarget.IsStay())
+        .Subscribe(_ =>
+        {
+            activeTarget.SetActive(false);
+            SelectRandomActiveTarget();
+        });
+
+
     }
 
-    void Update()
+    private void SelectRandomActiveTarget()
     {
+        activeTarget = SelectRandomTarget();
+        activeTarget.WaitingShot();
+        Debug.Log("selectTarget");
+    }
 
+    private void Update()
+    {
+        if ((Time.frameCount % 1000) == 0)
+        {
+            Debug.Log("マネージャー内:" + activeTarget + ":" + activeTarget.Status);
+        }
     }
 
     /// <summary>
@@ -49,15 +104,13 @@ public class TargetManager : MonoBehaviour
     {
         targetPool.Clear();
 
-        // 登録されているすべてのターゲットプレハブに紐づけた、Targetを生成する
+        // 登録されているすべてのターゲットを生成する
         for (var index = 0; index < targetPrefabs.Length; index++)
         {
-            // ターゲットを生成
-            var gameObject = Instantiate(targetPrefabs[index], transform.position, Quaternion.identity);
-            var target = new Target(gameObject);
-            target.SetDisplay(false);
-
-            // ターゲットプールに追加
+            //ターゲット生成
+            var targetObj = Instantiate(targetPrefabs[index], transform.position, Quaternion.identity);
+            var target = targetObj.GetComponent<Target>();
+            target.SetActive(false);
             targetPool.Add(target);
         }
     }
@@ -66,7 +119,7 @@ public class TargetManager : MonoBehaviour
     /// 非表示のターゲットの中からランダムに選ぶ
     /// </summary>
     /// <returns>ターゲット(選べなかった場合はnull)</returns>
-    public Target SelectRandomTarget()
+    private Target SelectRandomTarget()
     {
         // 無限ループにならないように対処
         if (targetPool.Count == 0)
@@ -74,33 +127,14 @@ public class TargetManager : MonoBehaviour
             return null;
         }
 
-        // ランダムに選ぶ
         Target target;
+
         do
         {
             target = targetPool[UnityEngine.Random.Range(0, targetPool.Count)];
-        } while (target.IsDisplay == false);
+
+        } while (activeTarget == target);
 
         return target;
-    }
-
-    /// <summary>
-    /// 指定されたGameObjectのターゲットを取得
-    /// </summary>
-    /// <param name="gameObject">対象のGameObject</param>
-    /// <returns>ターゲット(見つからない場合は null)</returns>
-    public Target FindTarget(GameObject gameObject)
-    {
-        // ターゲットプールから、対象のGameObjectを持つターゲットを探す
-        foreach (var target in targetPool)
-        {
-            if (target.TargetGameObject == gameObject)
-            {
-                return target;
-            }
-        }
-
-        // 見つからなかった
-        return null;
     }
 }

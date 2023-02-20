@@ -21,8 +21,6 @@ public class StagingManager : MonoBehaviour
     /// </summary>
     [SerializeField] private GameObject buttonSwing;
 
-    [SerializeField] private GameObject targetManagerObj;
-
     /// <summary>
     /// Follow Cameraクラス
     /// </summary>
@@ -33,44 +31,18 @@ public class StagingManager : MonoBehaviour
     /// </summary>
     private List<FollowCamera> followCameraPool = new List<FollowCamera>();
 
-    private TargetManager targetManager;
-
-    private Target activeTarget;
-
     private void Start()
     {
         //すべてのFollow Cameraをプールに保持する
-        foreach (var gameObject in followCameras)
+        foreach (var followCameraObj in followCameras)
         {
-            gameObject.SetActive(false);
-            var followCamera = new FollowCamera(gameObject);
+            followCameraObj.SetActive(false);
+            followCamera = followCameraObj.GetComponent<FollowCamera>();
             followCameraPool.Add(followCamera);
         }
-
-        targetManager = targetManagerObj.GetComponent<TargetManager>();
-
-        targetManager.ObserveEveryValueChanged(manager => manager.ActiveTarget)
-        .Where(target => target != null)
-        .Subscribe(target => activeTarget = target);
-
-        activeTarget.ObserveEveryValueChanged(target => target.Status)
-        .Where(_ => activeTarget.IsHit())
-        .Subscribe(_ => SwitchFollowCamera(activeTarget));
-
-        activeTarget.ObserveEveryValueChanged(target => target.Status)
-        .Where(_ => activeTarget.IsStandIn())
-        .Subscribe(_ => generateHomerunEffect());
     }
 
-    private void generateHomerunEffect()
-    {
-        Debug.Log("HOME RUN!");
-    }
 
-    void Update()
-    {
-
-    }
 
     /// <summary>
     /// Follow Cameraに切り替える
@@ -81,16 +53,16 @@ public class StagingManager : MonoBehaviour
         mainCamera.SetActive(false);
         buttonSwing.SetActive(false);
         followCamera = SelectRandomFollowCamera();
-        followCamera.SetDisplay(true);
+        followCamera.SetActive(true);
         followCamera.FollowTarget(target);
     }
 
     /// <summary>
     /// Main Cameraに切り替える
     /// </summary>
-    public void SwitchMainCamera()
+    private void SwitchMainCamera()
     {
-        followCamera.SetDisplay(false);
+        followCamera.SetActive(false);
         buttonSwing.SetActive(true);
         mainCamera.SetActive(true);
     }
@@ -108,5 +80,12 @@ public class StagingManager : MonoBehaviour
         }
 
         return followCameraPool[UnityEngine.Random.Range(0, followCameraPool.Count)];
+    }
+
+    public void GenerateHomerunEffect(Target target)
+    {
+        Debug.Log("HOMERUN!!");
+        target.Stay();
+        SwitchMainCamera();
     }
 }

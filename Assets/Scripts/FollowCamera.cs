@@ -3,18 +3,8 @@ using System.Collections;
 using UnityEngine;
 using UniRx;
 
-public class FollowCamera
+public class FollowCamera : MonoBehaviour
 {
-    /// <summary>
-    /// Follow Cameraのオブジェクト
-    /// </summary>
-    private GameObject followCamera;
-
-    /// <summary>
-    /// ターゲットのオブジェクト
-    /// </summary>
-    private GameObject targetObj;
-
     /// <summary>
     /// ターゲットを追う速さ
     /// </summary>
@@ -26,16 +16,12 @@ public class FollowCamera
     /// イニシャライザ
     /// </summary>
     /// <param name="gameObject">Follow Cameraのオブジェクト</param>
-    public FollowCamera(GameObject gameObject)
-    {
-        followCamera = gameObject;
-    }
 
-    private void lookTarget()
+    private void LookTarget(GameObject targetObj)
     {
-        var relativePos = targetObj.transform.position - followCamera.transform.position;
+        var relativePos = targetObj.transform.position - this.gameObject.transform.position;
         var rotation = Quaternion.LookRotation(relativePos);
-        followCamera.transform.rotation = Quaternion.Slerp(followCamera.transform.rotation, rotation, followSpeed);
+        this.gameObject.transform.rotation = Quaternion.Slerp(this.gameObject.transform.rotation, rotation, followSpeed);
     }
 
     /// <summary>
@@ -44,17 +30,17 @@ public class FollowCamera
     /// <param name="target">対象のターゲット</param>
     public void FollowTarget(Target target)
     {
-        targetObj = target.GetObj();
+        var targetObj = target.GetObj();
         Observable.Interval(TimeSpan.FromSeconds(followInterval))
-        .Subscribe(_ => lookTarget());
+        .Subscribe(_ => LookTarget(targetObj));
     }
 
     /// <summary>
     /// 表示/非表示を設定する
     /// </summary>
-    /// <param name="isDisplay">true:表示 / false:非表示</param>
-    public void SetDisplay(bool isDisplay)
+    /// <param name="isActive">true:表示 / false:非表示</param>
+    public void SetActive(bool isActive)
     {
-        followCamera.SetActive(isDisplay);
+        this.gameObject.SetActive(isActive);
     }
 }

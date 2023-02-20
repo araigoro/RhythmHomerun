@@ -931,6 +931,7 @@ GameObject:
   - component: {fileID: 517885511}
   - component: {fileID: 517885513}
   - component: {fileID: 517885514}
+  - component: {fileID: 517885515}
   m_Layer: 0
   m_Name: Follow Camera Catcher
   m_TagString: Untagged
@@ -1004,6 +1005,18 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 517885510}
   m_Enabled: 1
+--- !u!114 &517885515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 517885510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f19bdc7f462b834196aba3c1b572ddc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &529163526 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6503890800570028682, guid: b01a9d8c8586a9d488a20cb0a75f39b1,
@@ -1204,6 +1217,7 @@ GameObject:
   - component: {fileID: 633156538}
   - component: {fileID: 633156540}
   - component: {fileID: 633156541}
+  - component: {fileID: 633156542}
   m_Layer: 0
   m_Name: Follow Camera RightStand
   m_TagString: Untagged
@@ -1277,6 +1291,18 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 633156537}
   m_Enabled: 1
+--- !u!114 &633156542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 633156537}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f19bdc7f462b834196aba3c1b572ddc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &644943983 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -7003530270599684327, guid: b01a9d8c8586a9d488a20cb0a75f39b1,
@@ -2104,6 +2130,7 @@ GameObject:
   - component: {fileID: 1033429483}
   - component: {fileID: 1033429485}
   - component: {fileID: 1033429486}
+  - component: {fileID: 1033429487}
   m_Layer: 0
   m_Name: Follow Camera LeftStand
   m_TagString: Untagged
@@ -2177,6 +2204,18 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1033429482}
   m_Enabled: 1
+--- !u!114 &1033429487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1033429482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f19bdc7f462b834196aba3c1b572ddc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1034023957 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -3975174677846057219, guid: b01a9d8c8586a9d488a20cb0a75f39b1,
@@ -2362,7 +2401,6 @@ MonoBehaviour:
   - {fileID: 633156537}
   - {fileID: 1033429482}
   buttonSwing: {fileID: 1500200519}
-  targetManagerObj: {fileID: 1819392452}
 --- !u!1 &1094658719 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -8127924739254032469, guid: b01a9d8c8586a9d488a20cb0a75f39b1,
@@ -2407,6 +2445,26 @@ MonoBehaviour:
   boneID: 28
   ikEnabled: 0
   ikWeight: 1
+--- !u!1 &1160875554 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8134837689134937748, guid: 09eb575d55391974db95fc2a126e3990,
+    type: 3}
+  m_PrefabInstance: {fileID: 1420731254}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &1160875558
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1160875554}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 2977981768884665668, guid: 09eb575d55391974db95fc2a126e3990, type: 3}
 --- !u!1 &1180758197 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -1496609995845465592, guid: b01a9d8c8586a9d488a20cb0a75f39b1,
@@ -3551,7 +3609,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e39ac1eabed5a74bac7f5ae8013ec25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetManagerObj: {fileID: 1819392452}
   soundHit: {fileID: 8300000, guid: 4a65958cf4bef1744aa99b1f7df0b8b9, type: 3}
 --- !u!1 &1487882255 stripped
 GameObject:
@@ -4200,7 +4257,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetPrefabs:
   - {fileID: 6003936292375450369, guid: ad8105dc5ac4cdd40ab7261f0f8a9953, type: 3}
+  - {fileID: 7241503185792172983, guid: 352ea163558e9da4c81c2fa72ebc599f, type: 3}
+  - {fileID: 7241503185792172983, guid: 8e62fe8dae4bf104fabfad5a042aed6c, type: 3}
+  - {fileID: 7241503185792172983, guid: 39abc773460308a4f88f5b38f1d7a62d, type: 3}
+  - {fileID: 7241503185792172983, guid: 4e424c429009e0f43b72403b0403f316, type: 3}
   pitchingMachineObj: {fileID: 2131230680}
+  baseballBatObj: {fileID: 1480589842}
+  stagingManagerObj: {fileID: 1093007916}
+  fieldGround: {fileID: 1160875554}
 --- !u!1 &1835499070 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -5309056319243584541, guid: b01a9d8c8586a9d488a20cb0a75f39b1,
@@ -4333,25 +4397,6 @@ MonoBehaviour:
   boneID: 3
   ikEnabled: 0
   ikWeight: 1
---- !u!1 &1913522854 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 09eb575d55391974db95fc2a126e3990,
-    type: 3}
-  m_PrefabInstance: {fileID: 1420731254}
-  m_PrefabAsset: {fileID: 0}
---- !u!65 &1913522857
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1913522854}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 2, y: 0, z: 2}
-  m_Center: {x: 0, y: 0, z: -1}
 --- !u!1 &1936904927 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5158909095647385673, guid: b01a9d8c8586a9d488a20cb0a75f39b1,
@@ -4911,5 +4956,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pitchingMachine: {fileID: 2131230680}
   soundShot: {fileID: 8300000, guid: f24acae8437f21643ab5b842edbef894, type: 3}
-  i:
-    value: 0
