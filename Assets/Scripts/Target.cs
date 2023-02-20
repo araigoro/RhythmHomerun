@@ -31,15 +31,11 @@ public class Target : MonoBehaviour
 
     [System.NonSerialized] public int Status = State.Stay;
 
-    /// <summary>
-    /// イニシャライザ
-    /// </summary>
-    /// <param name="gameObject">ターゲットのプレハブのGameObject</param>
-
     private void Awake()
     {
         targetCollider = this.gameObject.GetComponent<Collider>();
         targetRigitbody = this.gameObject.GetComponent<Rigidbody>();
+        Status = State.Stay;
     }
 
     private void Update()

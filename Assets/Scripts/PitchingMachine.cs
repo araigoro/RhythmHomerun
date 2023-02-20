@@ -51,8 +51,8 @@ public class PitchingMachine : MonoBehaviour
         if (target != null)
         {
             // 初期位置に設定
-            target.SetActive(true);
             target.Respawn(pitchingMachine.transform.position);
+            target.SetActive(true);
             target.MoveParabola(strikePosition, shotAngle);
 
             // 投げる音を鳴らす
@@ -62,6 +62,8 @@ public class PitchingMachine : MonoBehaviour
             // StartCoroutine(targetObj.Collect());
 
             LoseTarget();
+
+            Debug.Log("SHOT");
         }
     }
 

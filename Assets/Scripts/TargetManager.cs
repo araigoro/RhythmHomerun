@@ -44,7 +44,9 @@ public class TargetManager : MonoBehaviour
 
         SelectRandomActiveTarget();
 
-        activeTarget.ObserveEveryValueChanged(target => target)
+        Observable.EveryUpdate()
+        .Select(target => activeTarget)
+        .DistinctUntilChanged()
         .Where(target => target.IsWaitingShot())
         .Subscribe(target =>
         {
@@ -52,6 +54,16 @@ public class TargetManager : MonoBehaviour
             Debug.Log("マシーンadd");
             baseballBat.RegisterTarget(target);
         });
+
+
+        // activeTarget.ObserveEveryValueChanged(target => target)
+        // .Where(target => target.IsWaitingShot())
+        // .Subscribe(target =>
+        // {
+        //     pitchingMachine.Add(target);
+        //     Debug.Log("マシーンadd");
+        //     baseballBat.RegisterTarget(target);
+        // });
 
         var changedTargetStatus = activeTarget.ObserveEveryValueChanged(target => target.Status);
 
@@ -77,9 +89,8 @@ public class TargetManager : MonoBehaviour
         {
             activeTarget.SetActive(false);
             SelectRandomActiveTarget();
+            Debug.Log("Reset");
         });
-
-
     }
 
     private void SelectRandomActiveTarget()
