@@ -7,11 +7,6 @@ using UniRx;
 public class PitchingMachine : MonoBehaviour
 {
     /// <summary>
-    /// 自身のゲームオブジェクト
-    /// </summary>
-    [SerializeField] private GameObject pitchingMachine;
-
-    /// <summary>
     /// ショット音
     /// </summary>
     [SerializeField] private AudioClip soundShot;
@@ -33,26 +28,57 @@ public class PitchingMachine : MonoBehaviour
     /// </summary>
     private Vector3 strikePosition = new Vector3(0, 3, -1) / 10;
 
+    /// <summary>
+    /// アニメーター
+    /// </summary>
     private Animator animator;
 
-    private const string TriggerPitching = "TriggerPitching";
+    /// <summary>
+    /// 投球モーション開始用のトリガー名
+    /// </summary>
+    private const string animatorTriggerPitching = "TriggerPitching";
 
+    enum State
+    {
+        Waiting, Pitching, AfterPitching
+    }
+    private State pitchingState = State.Waiting;
 
     private void Awake()
     {
-        animator = pitchingMachine.GetComponent<Animator>();
+        animator = gameObject.GetComponent<Animator>();
     }
 
+    [System.Obsolete]
     private void Update()
     {
-        // 一定間隔で投げる
-        if ((Time.frameCount % shotInterval) == 0)
+        switch (pitchingState)
         {
-            Debug.Log("マシーン内のtarget:" + target);
-            animator.SetTrigger(TriggerPitching);
+            case State.Waiting:
+                if (target != null)
+                {
+                    // 投球開始
+                    // 投球モーションに切り替える
+                    animator.ForceStateNormalizedTime(1.0f);
+                    animator.SetTrigger(animatorTriggerPitching);
 
+                    pitchingState = State.Pitching;
+                }
+                break;
 
-            ShotTarget();
+            case State.Pitching:
+                if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.88f)
+                {
+                    ShotTarget();
+                }
+                break;
+
+            case State.AfterPitching:
+                if (target == null)
+                {
+                    pitchingState = State.Waiting;
+                }
+                break;
         }
     }
 
@@ -61,20 +87,24 @@ public class PitchingMachine : MonoBehaviour
     /// </summary>
     private void ShotTarget()
     {
-        if (target != null)
+        if (target == null)
         {
-            // 初期位置に設定
-            target.SetActive(true);
-            target.Respawn(pitchingMachine.transform.position);
-            target.MoveParabola(strikePosition, shotAngle);
-
-            // 投げる音を鳴らす
-            AudioSource.PlayClipAtPoint(soundShot, pitchingMachine.transform.position);
-
-            LoseTarget();
-
-            Debug.Log("SHOT");
+            Debug.Log("Target is null!!");
+            return;
         }
+
+        // 初期位置に設定
+        target.SetActive(true);
+        var position = new Vector3(gameObject.transform.position.x - 0.2f,
+                                    gameObject.transform.position.y + 1.0f,
+                                    gameObject.transform.position.z);
+        target.Respawn(position);
+        target.MoveParabola(strikePosition, shotAngle);
+
+        // 投げる音を鳴らす
+        AudioSource.PlayClipAtPoint(soundShot, gameObject.transform.position);
+
+        LoseTarget();
     }
 
     private void LoseTarget()
