@@ -130,7 +130,7 @@ public class TargetManager : MonoBehaviour
 
         do
         {
-            target = targetPool[UnityEngine.Random.Range(0, targetPool.Count)];
+            target = targetPool[1/*UnityEngine.Random.Range(0, targetPool.Count)*/];
 
         } while (activeTarget == target);
 

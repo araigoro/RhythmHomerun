@@ -21,20 +21,51 @@ public class Target : MonoBehaviour
     /// </summary>
     private Rigidbody targetRigitbody;
 
-    private class State
+    /// <summary>
+    /// ターゲットのTrailRenderer
+    /// </summary>
+    private TrailRenderer trailRenderer;
+
+    public enum State
     {
-        public const int Stay = 0;
-        public const int WaitingShot = 1;
-        public const int Hit = 2;
-        public const int StandIn = 3;
+        Stay = 0,
+        WaitingShot,
+        Hit,
+        StandIn
     }
 
-    [System.NonSerialized] public int Status = State.Stay;
+    private State status;
+    public State Status
+    {
+        get
+        {
+            return status;
+        }
+        private set
+        {
+            status = value;
+            if (trailRenderer != null)
+            {
+                // 待機中になったら軌跡はオフ
+                if (status == State.Stay)
+                {
+                    trailRenderer.enabled = false;
+                }
+
+                // ヒットしたら軌跡はオン
+                if (status == State.Hit)
+                {
+                    trailRenderer.enabled = true;
+                }
+            }
+        }
+    }
 
     private void Awake()
     {
         targetCollider = this.gameObject.GetComponent<Collider>();
         targetRigitbody = this.gameObject.GetComponent<Rigidbody>();
+        trailRenderer = this.gameObject.GetComponent<TrailRenderer>();
         Status = State.Stay;
     }
 
