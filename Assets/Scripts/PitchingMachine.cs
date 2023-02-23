@@ -70,13 +70,14 @@ public class PitchingMachine : MonoBehaviour
                 if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.88f)
                 {
                     ShotTarget();
+                    pitchingState = State.Waiting;
                 }
                 break;
 
             case State.AfterPitching:
                 if (target == null)
                 {
-                    pitchingState = State.Waiting;
+
                 }
                 break;
         }

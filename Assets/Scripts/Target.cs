@@ -34,7 +34,7 @@ public class Target : MonoBehaviour
         StandIn
     }
 
-    private State status;
+    private State status = State.Stay;
     public State Status
     {
         get
@@ -66,7 +66,7 @@ public class Target : MonoBehaviour
         targetCollider = this.gameObject.GetComponent<Collider>();
         targetRigitbody = this.gameObject.GetComponent<Rigidbody>();
         trailRenderer = this.gameObject.GetComponent<TrailRenderer>();
-        Status = State.Stay;
+        trailRenderer.enabled = false;
     }
 
     private void Update()
