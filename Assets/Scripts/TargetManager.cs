@@ -98,10 +98,10 @@ public class TargetManager : MonoBehaviour
             .Subscribe(_ =>
             {
                 stagingManager.GenerateHomerunEffect(target);
-                target.Stay();
-                target.SetActive(false);
-                SelectRandomActiveTarget();
-                Debug.Log("NextTarget");
+                //target.Stay();
+                //target.SetActive(false);
+                //SelectRandomActiveTarget();
+                //Debug.Log("NextTarget");
             });
 
             target.OnCollisionEnterAsObservable()

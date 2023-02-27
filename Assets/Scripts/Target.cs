@@ -19,7 +19,7 @@ public class Target : MonoBehaviour
     /// <summary>
     /// ターゲットのRigitbody
     /// </summary>
-    private Rigidbody targetRigitbody;
+    public Rigidbody targetRigitbody { get;  private set; }
 
     /// <summary>
     /// ターゲットのTrailRenderer

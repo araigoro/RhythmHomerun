@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.VFX;
 using UniRx;
 using System;
 
@@ -27,6 +28,12 @@ public class StagingManager : MonoBehaviour
     private FollowCamera followCamera;
 
     /// <summary>
+    /// 花火
+    /// </summary>
+    [SerializeField] private VisualEffect normalFirework;
+    [SerializeField] private VisualEffect sidareFirework;
+
+    /// <summary>
     /// Follow Camera保持テーブル
     /// </summary>
     private List<FollowCamera> followCameraPool = new List<FollowCamera>();
@@ -40,6 +47,10 @@ public class StagingManager : MonoBehaviour
             followCamera = followCameraObj.GetComponent<FollowCamera>();
             followCameraPool.Add(followCamera);
         }
+
+        // 花火を停止
+        normalFirework.SendEvent("StopPlay");
+        sidareFirework.SendEvent("StopPlay");
     }
 
 
@@ -85,7 +96,30 @@ public class StagingManager : MonoBehaviour
     public void GenerateHomerunEffect(Target target)
     {
         Debug.Log("HOMERUN!!");
+
+        // 花火の演出開始
+        normalFirework.transform.position = target.transform.position;
+        sidareFirework.transform.position = target.transform.position;
+        normalFirework.SendEvent("StartPlay");
+        sidareFirework.SendEvent("StartPlay");
+
+        // 一定時間で消す
+        StartCoroutine(ProcessingHomerunEffect(target));
+    }
+
+    /// <summary>
+    /// 一定時間後にオブジェクトを非表示にするコルーチン
+    /// </summary>
+    /// <returns>IEnumerator</returns>
+    public IEnumerator ProcessingHomerunEffect(Target target)
+    {
+        yield return new WaitForSeconds(5.0f);
+
+        normalFirework.SendEvent("StopPlay");
+        sidareFirework.SendEvent("StopPlay");
+
         target.Stay();
         SwitchMainCamera();
     }
+
 }
