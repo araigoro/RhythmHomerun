@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UniRx;
-
+using System.Collections;
 
 public class PitchingMachine : MonoBehaviour
 {
@@ -73,13 +73,6 @@ public class PitchingMachine : MonoBehaviour
                     pitchingState = State.Waiting;
                 }
                 break;
-
-            case State.AfterPitching:
-                if (target == null)
-                {
-
-                }
-                break;
         }
     }
 
@@ -92,7 +85,10 @@ public class PitchingMachine : MonoBehaviour
         {
             Debug.Log("Target is null!!");
             return;
+            //yield return null;
         }
+
+        //yield return new WaitForSeconds(1.0f);
 
         // 初期位置に設定
         target.SetActive(true);
@@ -100,6 +96,8 @@ public class PitchingMachine : MonoBehaviour
                                     gameObject.transform.position.y + 1.0f,
                                     gameObject.transform.position.z);
         target.Respawn(position);
+        Debug.Log(strikePosition);
+        Debug.Log(shotAngle);
         target.MoveParabola(strikePosition, shotAngle);
 
         // 投げる音を鳴らす
@@ -116,5 +114,6 @@ public class PitchingMachine : MonoBehaviour
     public void Add(Target target)
     {
         this.target = target;
+        Debug.Log(target + "in pitching machine");
     }
 }

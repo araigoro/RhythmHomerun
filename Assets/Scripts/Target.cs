@@ -28,9 +28,10 @@ public class Target : MonoBehaviour
 
     public enum State
     {
-        Stay = 0,
+        Stay,
         WaitingShot,
         Hit,
+        Fly,
         StandIn
     }
 
@@ -74,6 +75,15 @@ public class Target : MonoBehaviour
         if (this.gameObject.transform.position.z >= 33)
         {
             Homerun();
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "ground")
+        {
+            Stay();
+            Debug.Log("打たれず");
         }
     }
 
@@ -205,5 +215,10 @@ public class Target : MonoBehaviour
     public bool IsStay()
     {
         return Status == State.Stay;
+    }
+
+    public void Fly()
+    {
+        Status = State.Fly;
     }
 }

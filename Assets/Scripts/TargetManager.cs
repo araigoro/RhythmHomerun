@@ -18,8 +18,6 @@ public class TargetManager : MonoBehaviour
 
     [SerializeField] private GameObject stagingManagerObj;
 
-    [SerializeField] private GameObject fieldGround;
-
     /// <summary>
     /// ターゲット保持テーブル
     /// </summary>
@@ -49,8 +47,10 @@ public class TargetManager : MonoBehaviour
     {
         activeTarget = SelectRandomTarget();
         activeTarget.WaitingShot();
+        pitchingMachine.Add(activeTarget);
+        baseballBat.RegisterTarget(activeTarget);
 
-        Debug.Log("selectTarget");
+        Debug.Log("add target");
     }
 
     private void Update()
@@ -58,6 +58,27 @@ public class TargetManager : MonoBehaviour
         if ((Time.frameCount % 1000) == 0)
         {
             Debug.Log("マネージャー内:" + activeTarget + ":" + activeTarget.Status);
+        }
+
+        if (activeTarget.IsHit())
+        {
+            stagingManager.SwitchFollowCamera(activeTarget);
+            activeTarget.Fly();
+        }
+
+        if (activeTarget.IsStandIn())
+        {
+            stagingManager.GenerateHomerunEffect(activeTarget);
+            Debug.Log(activeTarget+":"+activeTarget.Status);
+            activeTarget.Stay();
+        }
+
+        if (activeTarget.IsStay())
+        {
+            stagingManager.SwitchMainCamera();
+            activeTarget.Respawn(transform.position);
+            activeTarget.SetActive(false);
+            SelectRandomActiveTarget();
         }
     }
 
@@ -77,51 +98,6 @@ public class TargetManager : MonoBehaviour
 
             target.SetActive(false);
             targetPool.Add(target);
-
-            var changedTargetStatus = target.ObserveEveryValueChanged(target => target.Status);
-
-            changedTargetStatus
-            .Where(_ => target.IsWaitingShot())
-            .Subscribe(_ =>
-            {
-                pitchingMachine.Add(target);
-                Debug.Log("マシーンadd");
-                baseballBat.RegisterTarget(target);
-            });
-
-            changedTargetStatus
-            .Where(_ => target.IsHit())
-            .Subscribe(_ => stagingManager.SwitchFollowCamera(target));
-
-            changedTargetStatus
-            .Where(_ => target.IsStandIn())
-            .Subscribe(_ =>
-            {
-                stagingManager.GenerateHomerunEffect(target);
-                target.Stay();
-                target.SetActive(false);
-                SelectRandomActiveTarget();
-                Debug.Log("NextTarget");
-            });
-
-            target.OnCollisionEnterAsObservable()
-            .Where(collision => collision.gameObject == fieldGround)
-            .Subscribe(_ =>
-            {
-                target.Stay();
-                target.SetActive(false);
-                SelectRandomActiveTarget();
-                Debug.Log("NextTarget");
-            });
-
-            // changedTargetStatus
-            // .Where(_ => target.IsStay())
-            // .Subscribe(_ =>
-            // {
-            //     target.SetActive(false);
-            //     SelectRandomActiveTarget();
-            //     Debug.Log("NextTarget");
-            // });
         }
     }
 
@@ -131,9 +107,6 @@ public class TargetManager : MonoBehaviour
     /// <returns>ターゲット(選べなかった場合はnull)</returns>
     private Target SelectRandomTarget()
     {
-
-        Debug.Log(targetPool.Count);
-
         // 無限ループにならないように対処
         if (targetPool.Count == 0)
         {
@@ -149,5 +122,10 @@ public class TargetManager : MonoBehaviour
         } while (activeTarget == target);
 
         return target;
+    }
+
+    public void FollowTarget(Target target)
+    {
+        stagingManager.SwitchFollowCamera(target);
     }
 }

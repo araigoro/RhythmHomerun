@@ -11,6 +11,8 @@ public class BaseballBat : MonoBehaviour
     /// </summary>
     [SerializeField] private AudioClip soundHit;
 
+    [SerializeField] GameObject targetManagerObj;
+
     /// <summary>
     /// 打ったオブジェクトを飛ばす目標地点（レフト方向）
     /// </summary>
@@ -43,14 +45,22 @@ public class BaseballBat : MonoBehaviour
 
     private Target activeTarget;
 
+    private TargetManager targetManager;
+
+    private void Awake()
+    {
+        targetManager = targetManagerObj.GetComponent<TargetManager>();
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         // 対象のGameObjectがターゲットオブジェクトか？
         // 違和感
-        if (activeTarget.IsSameObj(collision.gameObject))
+        Target collisionTarget = collision.gameObject.GetComponent<Target>();
+        if (activeTarget == collisionTarget)
         {
             // 打つ！
-            HitTarget(activeTarget);
+            HitTarget(collisionTarget);
         }
     }
 
@@ -72,14 +82,13 @@ public class BaseballBat : MonoBehaviour
         var targetPosition = SelectTargetPoint(target);
 
         target.Hit();
+        //targetManager.FollowTarget(target);
 
         //打撃音を鳴らす
         AudioSource.PlayClipAtPoint(soundHit, transform.position);
 
         //ターゲットオブジェクトを放物線状に飛ばす
         target.MoveParabola(targetPosition, hitAngle);
-
-        activeTarget = null;
     }
 
     /// <summary>
