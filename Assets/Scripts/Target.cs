@@ -70,7 +70,7 @@ public class Target : MonoBehaviour
         trailRenderer.enabled = false;
     }
 
-    private void Update()
+    public void OnUpdate()
     {
         if (this.gameObject.transform.position.z >= 33)
         {
@@ -83,6 +83,7 @@ public class Target : MonoBehaviour
         if (collision.gameObject.tag == "ground")
         {
             Stay();
+            ResetVelocity();
             Debug.Log("打たれず");
         }
     }
@@ -145,6 +146,11 @@ public class Target : MonoBehaviour
     public void ColliderOff()
     {
         targetCollider.enabled = false;
+    }
+
+    public void ColliderOn()
+    {
+        targetCollider.enabled = true;
     }
 
     /// <summary>
@@ -220,5 +226,11 @@ public class Target : MonoBehaviour
     public void Fly()
     {
         Status = State.Fly;
+    }
+
+    public void ResetVelocity()
+    {
+        targetRigitbody.velocity = Vector3.zero;
+        targetRigitbody.angularVelocity = Vector3.zero;
     }
 }

@@ -109,6 +109,11 @@ public class PitchingMachine : MonoBehaviour
     private void LoseTarget()
     {
         target = null;
+
+        if (target == null)
+        {
+            Debug.Log("null");
+        }
     }
 
     public void Add(Target target)

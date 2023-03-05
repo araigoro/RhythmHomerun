@@ -60,6 +60,8 @@ public class TargetManager : MonoBehaviour
             Debug.Log("マネージャー内:" + activeTarget + ":" + activeTarget.Status);
         }
 
+        activeTarget.OnUpdate();
+
         if (activeTarget.IsHit())
         {
             stagingManager.SwitchFollowCamera(activeTarget);
@@ -70,6 +72,7 @@ public class TargetManager : MonoBehaviour
         {
             stagingManager.GenerateHomerunEffect(activeTarget);
             Debug.Log(activeTarget+":"+activeTarget.Status);
+            activeTarget.ResetVelocity();
             activeTarget.Stay();
         }
 
@@ -78,8 +81,9 @@ public class TargetManager : MonoBehaviour
             stagingManager.SwitchMainCamera();
             activeTarget.Respawn(transform.position);
             activeTarget.SetActive(false);
+            activeTarget.ColliderOn();
             SelectRandomActiveTarget();
-        }
+        }   
     }
 
     /// <summary>

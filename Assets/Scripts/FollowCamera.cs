@@ -39,7 +39,10 @@ public class FollowCamera : MonoBehaviour
         var relativePos = targetObj.transform.position - this.gameObject.transform.position;
         var rotation = Quaternion.LookRotation(relativePos);
         this.gameObject.transform.rotation = Quaternion.Slerp(this.gameObject.transform.rotation, rotation, followSpeed);
+        
+        //メインに切り替えるときにコレを消さないと2回目以降ズームスピードが倍増するので処置必要
         camera.fieldOfView=camera.fieldOfView-0.1f;
+
     }
 
     /// <summary>
