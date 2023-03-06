@@ -33,6 +33,8 @@ public class BaseballBat : MonoBehaviour
     /// </summary>
     private const float hitAngle = 45;
 
+    private const float hitPower = 1.2f;
+
     /// <summary>
     ///　打ったオブジェクトをレフトに飛ばすかどうかの基準値
     /// </summary>
@@ -82,13 +84,12 @@ public class BaseballBat : MonoBehaviour
         var targetPosition = SelectTargetPoint(target);
 
         target.Hit();
-        //targetManager.FollowTarget(target);
 
         //打撃音を鳴らす
         AudioSource.PlayClipAtPoint(soundHit, transform.position);
 
         //ターゲットオブジェクトを放物線状に飛ばす
-        target.MoveParabola(targetPosition, hitAngle);
+        target.MoveParabola(targetPosition,hitPower, hitAngle);
     }
 
     /// <summary>

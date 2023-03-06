@@ -23,6 +23,8 @@ public class PitchingMachine : MonoBehaviour
     /// </summary>
     private const float shotAngle = 30;
 
+    private const float shotPower = 1.0f;
+
     /// <summary>
     /// オブジェクトを飛ばす目標地点
     /// </summary>
@@ -98,7 +100,7 @@ public class PitchingMachine : MonoBehaviour
         target.Respawn(position);
         Debug.Log(strikePosition);
         Debug.Log(shotAngle);
-        target.MoveParabola(strikePosition, shotAngle);
+        target.MoveParabola(strikePosition,shotPower, shotAngle);
 
         // 投げる音を鳴らす
         AudioSource.PlayClipAtPoint(soundShot, gameObject.transform.position);

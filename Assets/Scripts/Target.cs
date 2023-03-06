@@ -72,7 +72,7 @@ public class Target : MonoBehaviour
 
     public void OnUpdate()
     {
-        if (this.gameObject.transform.position.z >= 33)
+        if (this.gameObject.transform.position.y <= 0)
         {
             Homerun();
         }
@@ -86,6 +86,12 @@ public class Target : MonoBehaviour
             ResetVelocity();
             Debug.Log("打たれず");
         }
+
+        //if (collision.gameObject.tag == "stand")
+        //{
+        //    Homerun();
+        //    ResetVelocity();
+        //}
     }
 
     /// <summary>
@@ -93,10 +99,10 @@ public class Target : MonoBehaviour
     /// </summary>
     /// <param name="targetPosition">目標地点</param>
     /// <param name="angle">角度</param>
-    public void MoveParabola(Vector3 targetPosition, float angle)
+    public void MoveParabola(Vector3 targetPosition,float speed,float angle)
     {
         var startPosition = this.gameObject.transform.position;
-        var velocity = CalcVelocity(startPosition, targetPosition, angle);
+        var velocity = CalcVelocity(startPosition, targetPosition, angle)*speed;
         targetRigitbody.AddForce(velocity * targetRigitbody.mass, ForceMode.Impulse);
     }
 
