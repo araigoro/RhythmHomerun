@@ -81,7 +81,6 @@ public class TargetManager : MonoBehaviour
             stagingManager.SwitchMainCamera();
             activeTarget.Respawn(transform.position);
             activeTarget.SetActive(false);
-            activeTarget.ColliderOn();
             SelectRandomActiveTarget();
         }   
     }

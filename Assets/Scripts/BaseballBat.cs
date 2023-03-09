@@ -49,9 +49,12 @@ public class BaseballBat : MonoBehaviour
 
     private TargetManager targetManager;
 
+    private Collider collider;
+
     private void Awake()
     {
         targetManager = targetManagerObj.GetComponent<TargetManager>();
+        collider = this.GetComponent<Collider>();
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -71,6 +74,16 @@ public class BaseballBat : MonoBehaviour
         activeTarget = target;
     }
 
+    public void ColliderOn()
+    {
+        collider.enabled = true;
+    }
+
+    public void ColldierOff()
+    {
+        collider.enabled = false;
+    }
+
     /// <summary>
     /// ターゲットオブジェクトを打つ
     /// </summary>
@@ -78,7 +91,7 @@ public class BaseballBat : MonoBehaviour
     private void HitTarget(Target target)
     {
         //予期せぬ衝突を防ぐためにコライダーを無効にする
-        target.ColliderOff();
+        ColldierOff();
 
         //ターゲットオブジェクトを飛ばす先を取得
         var targetPosition = SelectTargetPoint(target);

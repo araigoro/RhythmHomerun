@@ -72,10 +72,10 @@ public class Target : MonoBehaviour
 
     public void OnUpdate()
     {
-        if (this.gameObject.transform.position.y <= 0)
-        {
-            Homerun();
-        }
+        //if (this.gameObject.transform.position.y <= 0)
+        //{
+        //    Homerun();
+        //}
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -87,11 +87,11 @@ public class Target : MonoBehaviour
             Debug.Log("打たれず");
         }
 
-        //if (collision.gameObject.tag == "stand")
-        //{
-        //    Homerun();
-        //    ResetVelocity();
-        //}
+        if (collision.gameObject.tag == "stand")
+        {
+            Homerun();
+            ResetVelocity();
+        }
     }
 
     /// <summary>
@@ -144,19 +144,6 @@ public class Target : MonoBehaviour
         }
 
         return (new Vector3(endPosition.x - startPosition.x, diffX * Mathf.Tan(rad), endPosition.z - startPosition.z).normalized * initVelocity);
-    }
-
-    /// <summary>
-    /// コライダーを無効にする
-    /// </summary>
-    public void ColliderOff()
-    {
-        targetCollider.enabled = false;
-    }
-
-    public void ColliderOn()
-    {
-        targetCollider.enabled = true;
     }
 
     /// <summary>
