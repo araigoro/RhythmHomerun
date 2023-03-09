@@ -140,11 +140,11 @@
     <vertexScaleByHeightFlag>false</vertexScaleByHeightFlag>
     <vertexScaleByHeight>158</vertexScaleByHeight>
     <waitProcessExitting>false</waitProcessExitting>
-    <pmxAssetPath>Assets/Animator Controller/初音ミク.pmd</pmxAssetPath>
+    <pmxAssetPath>Assets/Animation/初音ミク.pmd</pmxAssetPath>
     <vmdAssetPathList>
-      <string>Assets/Animator Controller/Motion_10.vmd</string>
+      <string>Assets/Animation/Motion_10.vmd</string>
     </vmdAssetPathList>
-    <fbxOutputPath>Assets/Animator Controller/初音ミク.fbx</fbxOutputPath>
+    <fbxOutputPath>Assets/Animation/バッター.fbx</fbxOutputPath>
     <bulletPhysicsVersion>_275</bulletPhysicsVersion>
     <useWineFlag>false</useWineFlag>
     <wine>Manual</wine>
@@ -185,5 +185,7 @@
       <selfShadowEnabled>true</selfShadowEnabled>
       <sphereMapEnabled>true</sphereMapEnabled>
     </materialGlobalProperty>
+    <materialProperyList />
+    <materialBlockPropertyList />
   </mmd4MecanimProperty>
 </PMX2FBXConfig>

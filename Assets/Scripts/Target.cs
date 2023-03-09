@@ -1,22 +1,14 @@
+using System;
 using System.Collections;
 using UnityEngine;
+using UniRx;
 
-public class Target
+public class Target : MonoBehaviour
 {
-    /// <summary>
-    /// ヒットターゲットのレイヤー名
-    /// </summary>
-    private const string hitTargetLayerName = "HitTarget";
-
     /// <summary>
     /// 非表示にするまでの時間(単位：秒)
     /// </summary>
     private const float aliveSeconds = 4.0f;
-
-    /// <summary>
-    /// ターゲットプレハブのGameObject
-    /// </summary>
-    public GameObject TargetGameObject { get; private set; }
 
     /// <summary>
     /// ターゲットのCollider
@@ -30,24 +22,76 @@ public class Target
     private Rigidbody targetRigitbody;
 
     /// <summary>
-    /// 表示中か？
+    /// ターゲットのTrailRenderer
     /// </summary>
-    public bool IsDisplay
+    private TrailRenderer trailRenderer;
+
+    public enum State
     {
-        get { return TargetGameObject.activeSelf ? false : true; }
+        Stay,
+        WaitingShot,
+        Hit,
+        Fly,
+        StandIn
     }
 
-    /// <summary>
-    /// イニシャライザ
-    /// </summary>
-    /// <param name="gameObject">ターゲットのプレハブのGameObject</param>
-    public Target(GameObject gameObject)
+    private State status = State.Stay;
+    public State Status
     {
-        TargetGameObject = gameObject;
+        get
+        {
+            return status;
+        }
+        private set
+        {
+            status = value;
+            if (trailRenderer != null)
+            {
+                // 待機中になったら軌跡はオフ
+                if (status == State.Stay)
+                {
+                    trailRenderer.enabled = false;
+                }
 
-        // GetComponentは重いので、コンポーネントを取得して保持しておく
-        targetCollider = TargetGameObject.GetComponent<Collider>();
-        targetRigitbody = TargetGameObject.GetComponent<Rigidbody>();
+                // ヒットしたら軌跡はオン
+                if (status == State.Hit)
+                {
+                    trailRenderer.enabled = true;
+                }
+            }
+        }
+    }
+
+    private void Awake()
+    {
+        targetCollider = this.gameObject.GetComponent<Collider>();
+        targetRigitbody = this.gameObject.GetComponent<Rigidbody>();
+        trailRenderer = this.gameObject.GetComponent<TrailRenderer>();
+        trailRenderer.enabled = false;
+    }
+
+    public void OnUpdate()
+    {
+        //if (this.gameObject.transform.position.y <= 0)
+        //{
+        //    Homerun();
+        //}
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "ground")
+        {
+            Stay();
+            ResetVelocity();
+            Debug.Log("打たれず");
+        }
+
+        if (collision.gameObject.tag == "stand")
+        {
+            Homerun();
+            ResetVelocity();
+        }
     }
 
     /// <summary>
@@ -55,38 +99,20 @@ public class Target
     /// </summary>
     /// <param name="targetPosition">目標地点</param>
     /// <param name="angle">角度</param>
-    public void MoveParabola(Vector3 targetPosition, float angle)
+    public void MoveParabola(Vector3 targetPosition,float speed,float angle)
     {
-        var startPosition = TargetGameObject.transform.position;
-        var velocity = CalcVelocity(startPosition, targetPosition, angle);
+        var startPosition = this.gameObject.transform.position;
+        var velocity = CalcVelocity(startPosition, targetPosition, angle)*speed;
         targetRigitbody.AddForce(velocity * targetRigitbody.mass, ForceMode.Impulse);
     }
 
     /// <summary>
     /// 表示／非表示を設定する
     /// </summary>
-    /// <param name="isDisplay">true:表示 / false:非表示</param>
-    public void SetDisplay(bool isDisplay)
+    /// <param name="isActive">true:表示 / false:非表示</param>
+    public void SetActive(bool isActive)
     {
-        TargetGameObject.SetActive(isDisplay);
-
-        if (isDisplay == true)
-        {
-            // 表示
-            targetCollider.enabled = true;
-        }
-    }
-
-    /// <summary>
-    /// 一定時間後にオブジェクトを非表示にするコルーチン
-    /// </summary>
-    /// <returns>IEnumerator</returns>
-    public IEnumerator Collect()
-    {
-        yield return new WaitForSeconds(aliveSeconds);
-
-        targetRigitbody.velocity = Vector3.zero;
-        SetDisplay(false);
+        this.gameObject.SetActive(isActive);
     }
 
     /// <summary>
@@ -95,16 +121,7 @@ public class Target
     /// <param name="targetPosition"></param>
     public void Respawn(Vector3 targetPosition)
     {
-        TargetGameObject.transform.position = targetPosition;
-    }
-
-    /// <summary>
-    /// オブジェクトは打てるターゲットオブジェクトか？
-    /// </summary>
-    /// <returns>true: ターゲット / false: 非ターゲット</returns>
-    public bool IsHitTarget()
-    {
-        return LayerMask.LayerToName(TargetGameObject.layer) == hitTargetLayerName;
+        this.transform.position = targetPosition;
     }
 
     /// <summary>
@@ -130,21 +147,13 @@ public class Target
     }
 
     /// <summary>
-    /// コライダーを無効にする
-    /// </summary>
-    public void ColliderOff()
-    {
-        targetCollider.enabled = false;
-    }
-
-    /// <summary>
     /// オブジェクトのZ値が、対象のZ値よりも大きいか？
     /// </summary>
     /// <param name="targetPositionZ">対象のZ値</param>
     /// <returns>true: 大きい / false: 同じか小さい</returns>
     public bool IsLargePositionZ(float targetPositionZ)
     {
-        return TargetGameObject.transform.position.z > targetPositionZ;
+        return this.gameObject.transform.position.z > targetPositionZ;
     }
 
     /// <summary>
@@ -152,8 +161,69 @@ public class Target
     /// </summary>
     /// <param name="targetPositionZ">対象のZ値</param>
     /// <returns>true: 小さい / false: 同じか大きい</returns>
-    internal bool IsSmallPositionZ(float targetPositionZ)
+    public bool IsSmallPositionZ(float targetPositionZ)
     {
-        return TargetGameObject.transform.position.z < targetPositionZ;
+        return this.gameObject.transform.position.z < targetPositionZ;
+    }
+
+    public void Hit()
+    {
+        Status = State.Hit;
+    }
+
+    public bool IsSameObj(GameObject gameObject)
+    {
+        return this.gameObject == gameObject;
+    }
+
+    public bool IsHit()
+    {
+        return Status == State.Hit;
+    }
+
+    public GameObject GetObj()
+    {
+        return this.gameObject;
+    }
+
+    public bool IsStandIn()
+    {
+        return Status == State.StandIn;
+    }
+
+    public bool IsWaitingShot()
+    {
+        return Status == State.WaitingShot;
+    }
+
+    public void WaitingShot()
+    {
+        Status = State.WaitingShot;
+    }
+
+    public void Homerun()
+    {
+        Status = State.StandIn;
+    }
+
+    public void Stay()
+    {
+        Status = State.Stay;
+    }
+
+    public bool IsStay()
+    {
+        return Status == State.Stay;
+    }
+
+    public void Fly()
+    {
+        Status = State.Fly;
+    }
+
+    public void ResetVelocity()
+    {
+        targetRigitbody.velocity = Vector3.zero;
+        targetRigitbody.angularVelocity = Vector3.zero;
     }
 }
