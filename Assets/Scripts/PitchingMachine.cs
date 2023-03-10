@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UniRx;
-
+using System.Collections;
 
 public class PitchingMachine : MonoBehaviour
 {
@@ -22,6 +22,8 @@ public class PitchingMachine : MonoBehaviour
     /// 投げるオブジェクトの角度
     /// </summary>
     private const float shotAngle = 30;
+
+    private const float shotPower = 1.0f;
 
     /// <summary>
     /// オブジェクトを飛ばす目標地点
@@ -73,13 +75,6 @@ public class PitchingMachine : MonoBehaviour
                     pitchingState = State.Waiting;
                 }
                 break;
-
-            case State.AfterPitching:
-                if (target == null)
-                {
-
-                }
-                break;
         }
     }
 
@@ -92,7 +87,10 @@ public class PitchingMachine : MonoBehaviour
         {
             Debug.Log("Target is null!!");
             return;
+            //yield return null;
         }
+
+        //yield return new WaitForSeconds(1.0f);
 
         // 初期位置に設定
         target.SetActive(true);
@@ -100,7 +98,9 @@ public class PitchingMachine : MonoBehaviour
                                     gameObject.transform.position.y + 1.0f,
                                     gameObject.transform.position.z);
         target.Respawn(position);
-        target.MoveParabola(strikePosition, shotAngle);
+        Debug.Log(strikePosition);
+        Debug.Log(shotAngle);
+        target.MoveParabola(strikePosition,shotPower, shotAngle);
 
         // 投げる音を鳴らす
         AudioSource.PlayClipAtPoint(soundShot, gameObject.transform.position);
@@ -111,10 +111,16 @@ public class PitchingMachine : MonoBehaviour
     private void LoseTarget()
     {
         target = null;
+
+        if (target == null)
+        {
+            Debug.Log("null");
+        }
     }
 
     public void Add(Target target)
     {
         this.target = target;
+        Debug.Log(target + "in pitching machine");
     }
 }

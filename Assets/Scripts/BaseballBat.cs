@@ -11,6 +11,8 @@ public class BaseballBat : MonoBehaviour
     /// </summary>
     [SerializeField] private AudioClip soundHit;
 
+    [SerializeField] GameObject targetManagerObj;
+
     /// <summary>
     /// 打ったオブジェクトを飛ばす目標地点（レフト方向）
     /// </summary>
@@ -31,6 +33,8 @@ public class BaseballBat : MonoBehaviour
     /// </summary>
     private const float hitAngle = 45;
 
+    private const float hitPower = 1.2f;
+
     /// <summary>
     ///　打ったオブジェクトをレフトに飛ばすかどうかの基準値
     /// </summary>
@@ -43,20 +47,41 @@ public class BaseballBat : MonoBehaviour
 
     private Target activeTarget;
 
+    private TargetManager targetManager;
+
+    private Collider collider;
+
+    private void Awake()
+    {
+        targetManager = targetManagerObj.GetComponent<TargetManager>();
+        collider = this.GetComponent<Collider>();
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         // 対象のGameObjectがターゲットオブジェクトか？
         // 違和感
-        if (activeTarget.IsSameObj(collision.gameObject))
+        Target collisionTarget = collision.gameObject.GetComponent<Target>();
+        if (activeTarget == collisionTarget)
         {
             // 打つ！
-            HitTarget(activeTarget);
+            HitTarget(collisionTarget);
         }
     }
 
     public void RegisterTarget(Target target)
     {
         activeTarget = target;
+    }
+
+    public void ColliderOn()
+    {
+        collider.enabled = true;
+    }
+
+    public void ColldierOff()
+    {
+        collider.enabled = false;
     }
 
     /// <summary>
@@ -66,7 +91,7 @@ public class BaseballBat : MonoBehaviour
     private void HitTarget(Target target)
     {
         //予期せぬ衝突を防ぐためにコライダーを無効にする
-        target.ColliderOff();
+        ColldierOff();
 
         //ターゲットオブジェクトを飛ばす先を取得
         var targetPosition = SelectTargetPoint(target);
@@ -77,9 +102,7 @@ public class BaseballBat : MonoBehaviour
         AudioSource.PlayClipAtPoint(soundHit, transform.position);
 
         //ターゲットオブジェクトを放物線状に飛ばす
-        target.MoveParabola(targetPosition, hitAngle);
-
-        activeTarget = null;
+        target.MoveParabola(targetPosition,hitPower, hitAngle);
     }
 
     /// <summary>

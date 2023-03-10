@@ -28,9 +28,10 @@ public class Target : MonoBehaviour
 
     public enum State
     {
-        Stay = 0,
+        Stay,
         WaitingShot,
         Hit,
+        Fly,
         StandIn
     }
 
@@ -69,11 +70,27 @@ public class Target : MonoBehaviour
         trailRenderer.enabled = false;
     }
 
-    private void Update()
+    public void OnUpdate()
     {
-        if (this.gameObject.transform.position.z >= 33)
+        //if (this.gameObject.transform.position.y <= 0)
+        //{
+        //    Homerun();
+        //}
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "ground")
+        {
+            Stay();
+            ResetVelocity();
+            Debug.Log("打たれず");
+        }
+
+        if (collision.gameObject.tag == "stand")
         {
             Homerun();
+            ResetVelocity();
         }
     }
 
@@ -82,10 +99,10 @@ public class Target : MonoBehaviour
     /// </summary>
     /// <param name="targetPosition">目標地点</param>
     /// <param name="angle">角度</param>
-    public void MoveParabola(Vector3 targetPosition, float angle)
+    public void MoveParabola(Vector3 targetPosition,float speed,float angle)
     {
         var startPosition = this.gameObject.transform.position;
-        var velocity = CalcVelocity(startPosition, targetPosition, angle);
+        var velocity = CalcVelocity(startPosition, targetPosition, angle)*speed;
         targetRigitbody.AddForce(velocity * targetRigitbody.mass, ForceMode.Impulse);
     }
 
@@ -127,14 +144,6 @@ public class Target : MonoBehaviour
         }
 
         return (new Vector3(endPosition.x - startPosition.x, diffX * Mathf.Tan(rad), endPosition.z - startPosition.z).normalized * initVelocity);
-    }
-
-    /// <summary>
-    /// コライダーを無効にする
-    /// </summary>
-    public void ColliderOff()
-    {
-        targetCollider.enabled = false;
     }
 
     /// <summary>
@@ -205,5 +214,16 @@ public class Target : MonoBehaviour
     public bool IsStay()
     {
         return Status == State.Stay;
+    }
+
+    public void Fly()
+    {
+        Status = State.Fly;
+    }
+
+    public void ResetVelocity()
+    {
+        targetRigitbody.velocity = Vector3.zero;
+        targetRigitbody.angularVelocity = Vector3.zero;
     }
 }

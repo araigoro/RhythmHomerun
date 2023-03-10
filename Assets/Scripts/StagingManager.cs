@@ -53,8 +53,6 @@ public class StagingManager : MonoBehaviour
         sidareFirework.SendEvent("StopPlay");
     }
 
-
-
     /// <summary>
     /// Follow Cameraに切り替える
     /// </summary>
@@ -65,14 +63,16 @@ public class StagingManager : MonoBehaviour
         buttonSwing.SetActive(false);
         followCamera = SelectRandomFollowCamera();
         followCamera.SetActive(true);
+        followCamera.ResetAngle();
         followCamera.FollowTarget(target);
     }
 
     /// <summary>
     /// Main Cameraに切り替える
     /// </summary>
-    private void SwitchMainCamera()
+    public void SwitchMainCamera()
     {
+        followCamera.CancelFollowTarget();
         followCamera.SetActive(false);
         buttonSwing.SetActive(true);
         mainCamera.SetActive(true);

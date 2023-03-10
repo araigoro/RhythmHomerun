@@ -12,16 +12,50 @@ public class FollowCamera : MonoBehaviour
 
     private const float followInterval = 0.01f;
 
+    private Quaternion initialAngle;
+
+    private GameObject targetObj;
+
+    private Camera camera;
+
+    private bool isFollowTarget = false;
+
     /// <summary>
     /// イニシャライザ
     /// </summary>
     /// <param name="gameObject">Follow Cameraのオブジェクト</param>
+
+    private void Start()
+    {
+        initialAngle = transform.rotation;
+        camera = this.GetComponent<Camera>();
+    }
+
+    private void Update()
+    {
+        if (isFollowTarget)
+        {
+            LookTarget(targetObj);
+        }
+    }
 
     private void LookTarget(GameObject targetObj)
     {
         var relativePos = targetObj.transform.position - this.gameObject.transform.position;
         var rotation = Quaternion.LookRotation(relativePos);
         this.gameObject.transform.rotation = Quaternion.Slerp(this.gameObject.transform.rotation, rotation, followSpeed);
+
+        //メインに切り替えるときにコレを消さないと2回目以降ズームスピードが倍増するので処置必要
+        ZoomIn();
+
+    }
+
+    private void ZoomIn()
+    {
+        if (camera.fieldOfView >= 30)
+        {
+            camera.fieldOfView = camera.fieldOfView - 0.1f;
+        }
     }
 
     /// <summary>
@@ -30,9 +64,16 @@ public class FollowCamera : MonoBehaviour
     /// <param name="target">対象のターゲット</param>
     public void FollowTarget(Target target)
     {
-        var targetObj = target.GetObj();
-        Observable.Interval(TimeSpan.FromSeconds(followInterval))
-        .Subscribe(_ => LookTarget(targetObj));
+        targetObj= target.GetObj();
+        camera.fieldOfView = 60;
+        isFollowTarget = true;
+        //Observable.Interval(TimeSpan.FromSeconds(followInterval))
+        //.Subscribe(_ => LookTarget(targetObj));
+    }
+
+    internal void CancelFollowTarget()
+    {
+        isFollowTarget = false;
     }
 
     /// <summary>
@@ -42,5 +83,10 @@ public class FollowCamera : MonoBehaviour
     public void SetActive(bool isActive)
     {
         this.gameObject.SetActive(isActive);
+    }
+
+    public void ResetAngle()
+    {
+        transform.rotation = initialAngle;
     }
 }
