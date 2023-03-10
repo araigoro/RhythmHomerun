@@ -40,12 +40,6 @@ public class PitchingMachine : MonoBehaviour
     /// </summary>
     private const string animatorTriggerPitching = "TriggerPitching";
 
-    enum State
-    {
-        Waiting, Pitching, AfterPitching
-    }
-    private State pitchingState = State.Waiting;
-
     private void Awake()
     {
         animator = gameObject.GetComponent<Animator>();
@@ -54,34 +48,12 @@ public class PitchingMachine : MonoBehaviour
     [System.Obsolete]
     private void Update()
     {
-        switch (pitchingState)
-        {
-            case State.Waiting:
-                if (target != null)
-                {
-                    // 投球開始
-                    // 投球モーションに切り替える
-                    animator.ForceStateNormalizedTime(1.0f);
-                    animator.SetTrigger(animatorTriggerPitching);
-
-                    pitchingState = State.Pitching;
-                }
-                break;
-
-            case State.Pitching:
-                if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.88f)
-                {
-                    ShotTarget();
-                    pitchingState = State.Waiting;
-                }
-                break;
-        }
     }
 
     /// <summary>
     /// 所持しているターゲットを投げる
     /// </summary>
-    private void ShotTarget()
+    private void ThrowTarget()
     {
         if (target == null)
         {
@@ -89,8 +61,6 @@ public class PitchingMachine : MonoBehaviour
             return;
             //yield return null;
         }
-
-        //yield return new WaitForSeconds(1.0f);
 
         // 初期位置に設定
         target.SetActive(true);
@@ -118,9 +88,18 @@ public class PitchingMachine : MonoBehaviour
         }
     }
 
+    public void OnThrowEvent()
+    {
+        ThrowTarget();
+    }
+
     public void Add(Target target)
     {
         this.target = target;
         Debug.Log(target + "in pitching machine");
+
+        // 投球開始
+        // 投球モーションに切り替える
+        animator.SetTrigger(animatorTriggerPitching);
     }
 }
