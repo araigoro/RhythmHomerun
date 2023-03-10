@@ -25,6 +25,8 @@ public class TargetManager : MonoBehaviour
 
     private Target activeTarget;
 
+    private Target.State latestTargetState = Target.State.Stay;
+
     private PitchingMachine pitchingMachine;
 
     private BaseballBat baseballBat;
@@ -62,27 +64,35 @@ public class TargetManager : MonoBehaviour
 
         activeTarget.OnUpdate();
 
-        if (activeTarget.IsHit())
+        // ステータスが変わった時だけ処理したい
+        if (activeTarget.Status != latestTargetState)
         {
-            stagingManager.SwitchFollowCamera(activeTarget);
-            activeTarget.Fly();
-        }
+            latestTargetState = activeTarget.Status;
 
-        if (activeTarget.IsStandIn())
-        {
-            stagingManager.GenerateHomerunEffect(activeTarget);
-            Debug.Log(activeTarget+":"+activeTarget.Status);
-            activeTarget.ResetVelocity();
-            activeTarget.Stay();
-        }
+            // 打った→ターゲット追跡カメラに切り替え
+            if (activeTarget.IsHit())
+            {
+                stagingManager.SwitchFollowCamera(activeTarget);
+                activeTarget.Fly();
+            }
 
-        if (activeTarget.IsStay())
-        {
-            stagingManager.SwitchMainCamera();
-            activeTarget.Respawn(transform.position);
-            activeTarget.SetActive(false);
-            SelectRandomActiveTarget();
-        }   
+            // スタンドインした→ホームラン演出
+            if (activeTarget.IsStandIn())
+            {
+                stagingManager.GenerateHomerunEffect(activeTarget);
+                Debug.Log(activeTarget + ":" + activeTarget.Status);
+                activeTarget.ResetVelocity();
+            }
+
+            // 待機状態になった→メインカメラに切り替えて次のターゲットを設定
+            if (activeTarget.IsStay())
+            {
+                stagingManager.SwitchMainCamera();
+                activeTarget.Respawn(transform.position);
+                activeTarget.SetActive(false);
+                SelectRandomActiveTarget();
+            }
+        }
     }
 
     /// <summary>

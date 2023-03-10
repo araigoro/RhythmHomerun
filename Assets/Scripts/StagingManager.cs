@@ -103,7 +103,7 @@ public class StagingManager : MonoBehaviour
         normalFirework.SendEvent("StartPlay");
         sidareFirework.SendEvent("StartPlay");
 
-        // 一定時間で消す
+        // 一定時間で消す(強引…)
         StartCoroutine(ProcessingHomerunEffect(target));
     }
 
@@ -113,13 +113,14 @@ public class StagingManager : MonoBehaviour
     /// <returns>IEnumerator</returns>
     public IEnumerator ProcessingHomerunEffect(Target target)
     {
-        yield return new WaitForSeconds(5.0f);
+        yield return new WaitForSeconds(2.0f);
 
         normalFirework.SendEvent("StopPlay");
         sidareFirework.SendEvent("StopPlay");
 
+        yield return new WaitForSeconds(3.0f);
+
         target.Stay();
-        SwitchMainCamera();
     }
 
 }
