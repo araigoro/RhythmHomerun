@@ -4,18 +4,22 @@ using UnityEngine;
 using UnityEngine.VFX;
 using UniRx;
 using System;
+using Cinemachine;
+
+
+
 
 public class StagingManager : MonoBehaviour
 {
     /// <summary>
     /// Main Cameraのオブジェクト
     /// </summary>
-    [SerializeField] private GameObject mainCamera;
+    [SerializeField] private CinemachineVirtualCamera mainVCamera;
 
     /// <summary>
     /// Follow Cameraのオブジェクト
     /// </summary>
-    [SerializeField] private GameObject[] followCameras;
+    [SerializeField] private CinemachineVirtualCamera[] followVCameras;
 
     /// <summary>
     /// Button Swingのオブジェクト
@@ -25,7 +29,9 @@ public class StagingManager : MonoBehaviour
     /// <summary>
     /// Follow Cameraクラス
     /// </summary>
-    private FollowCamera followCamera;
+    //private FollowCamera followCamera;
+
+    private CinemachineVirtualCamera followVCamera;
 
     /// <summary>
     /// 花火
@@ -41,12 +47,12 @@ public class StagingManager : MonoBehaviour
     private void Start()
     {
         //すべてのFollow Cameraをプールに保持する
-        foreach (var followCameraObj in followCameras)
-        {
-            followCameraObj.SetActive(false);
-            followCamera = followCameraObj.GetComponent<FollowCamera>();
-            followCameraPool.Add(followCamera);
-        }
+        //foreach (var followCameraObj in followCameras)
+        //{
+        //    followCameraObj.SetActive(false);
+        //    followCamera = followCameraObj.GetComponent<FollowCamera>();
+        //    followCameraPool.Add(followCamera);
+        //}
 
         // 花火を停止
         normalFirework.SendEvent("StopPlay");
@@ -57,14 +63,29 @@ public class StagingManager : MonoBehaviour
     /// Follow Cameraに切り替える
     /// </summary>
     /// <param name="target">Follow対象のターゲット</param>
-    public void SwitchFollowCamera(Target target)
+    public void SwitchFollowCamera(GameObject targetObject)
     {
-        mainCamera.SetActive(false);
+        mainVCamera.gameObject.SetActive(false);
         buttonSwing.SetActive(false);
-        followCamera = SelectRandomFollowCamera();
-        followCamera.SetActive(true);
-        followCamera.ResetAngle();
-        followCamera.FollowTarget(target);
+        followVCamera = SelectFollowVCamera();
+        followVCamera.gameObject.SetActive(true);
+        followVCamera.LookAt = targetObject.transform;
+
+        //followCamera = SelectRandomFollowCamera();
+        //followCamera.SetActive(true);
+        //followCamera.ResetAngle();
+        //followCamera.FollowTarget(target);
+    }
+
+    private CinemachineVirtualCamera SelectFollowVCamera()
+    {
+        //無限ループ防止
+        if (followVCameras.Length == 0)
+        {
+            return null;
+        }
+
+        return followVCameras[UnityEngine.Random.Range(0, followVCameras.Length)];
     }
 
     /// <summary>
@@ -72,10 +93,11 @@ public class StagingManager : MonoBehaviour
     /// </summary>
     public void SwitchMainCamera()
     {
-        followCamera.CancelFollowTarget();
-        followCamera.SetActive(false);
+        //followCamera.CancelFollowTarget();
+        followVCamera.LookAt = null;
+        followVCamera.gameObject.SetActive(false);
         buttonSwing.SetActive(true);
-        mainCamera.SetActive(true);
+        mainVCamera.gameObject.SetActive(true);
     }
 
     /// <summary>

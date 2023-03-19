@@ -72,7 +72,7 @@ public class TargetManager : MonoBehaviour
             // 打った→ターゲット追跡カメラに切り替え
             if (activeTarget.IsHit())
             {
-                stagingManager.SwitchFollowCamera(activeTarget);
+                stagingManager.SwitchFollowCamera(activeTarget.GetObj());
                 activeTarget.Fly();
             }
 
@@ -135,10 +135,5 @@ public class TargetManager : MonoBehaviour
         } while (activeTarget == target);
 
         return target;
-    }
-
-    public void FollowTarget(Target target)
-    {
-        stagingManager.SwitchFollowCamera(target);
     }
 }
