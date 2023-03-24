@@ -94,7 +94,7 @@ public class StagingManager : MonoBehaviour
     public void SwitchMainCamera()
     {
         //followCamera.CancelFollowTarget();
-        followVCamera.LookAt = null;
+        //followVCamera.LookAt = null;
         followVCamera.gameObject.SetActive(false);
         buttonSwing.SetActive(true);
         mainVCamera.gameObject.SetActive(true);
