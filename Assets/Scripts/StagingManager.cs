@@ -40,6 +40,11 @@ public class StagingManager : MonoBehaviour
     [SerializeField] private VisualEffect sidareFirework;
 
     /// <summary>
+    /// 花火音
+    /// </summary>
+    private AudioSource soundFirework;
+
+    /// <summary>
     /// Follow Camera保持テーブル
     /// </summary>
     private List<FollowCamera> followCameraPool = new List<FollowCamera>();
@@ -53,6 +58,8 @@ public class StagingManager : MonoBehaviour
         //    followCamera = followCameraObj.GetComponent<FollowCamera>();
         //    followCameraPool.Add(followCamera);
         //}
+
+        soundFirework = GetComponent<AudioSource>();
 
         // 花火を停止
         normalFirework.SendEvent("StopPlay");
@@ -128,6 +135,9 @@ public class StagingManager : MonoBehaviour
         normalFirework.SendEvent("StartPlay");
         sidareFirework.SendEvent("StartPlay");
 
+        // 花火音を鳴らす
+        soundFirework.Play();
+
         // 一定時間で消す(強引…)
         StartCoroutine(ProcessingHomerunEffect(target));
     }
@@ -144,6 +154,9 @@ public class StagingManager : MonoBehaviour
         sidareFirework.SendEvent("StopPlay");
 
         yield return new WaitForSeconds(3.0f);
+
+        // 花火効果音を止める
+        soundFirework.Stop();
 
         target.Stay();
     }
