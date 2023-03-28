@@ -191,14 +191,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 11600308}
-  m_LocalRotation: {x: -0, y: -1, z: -0, w: 0}
-  m_LocalPosition: {x: 0, y: -0.33333334, z: -16.866667}
+  m_LocalRotation: {x: 0, y: 0.95558757, z: 0.29470754, w: 0}
+  m_LocalPosition: {x: 0, y: -0.33333334, z: -6.96}
   m_LocalScale: {x: 33.333336, y: 0.33333334, z: 16.666668}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 219066864}
   m_RootOrder: 11
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -34.28, y: 180, z: 0}
 --- !u!65 &11600310
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4861,7 +4861,6 @@ MonoBehaviour:
   buttonSwing: {fileID: 1500200519}
   normalFirework: {fileID: 182877263}
   sidareFirework: {fileID: 1095924080}
-  soundFirework: {fileID: 8300000, guid: 52daa407ef7c635429938f2efd1702fc, type: 3}
 --- !u!82 &1093007919
 AudioSource:
   m_ObjectHideFlags: 0
@@ -4873,7 +4872,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 52daa407ef7c635429938f2efd1702fc, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0

@@ -148,12 +148,12 @@ public class StagingManager : MonoBehaviour
     /// <returns>IEnumerator</returns>
     public IEnumerator ProcessingHomerunEffect(Target target)
     {
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(1.0f);
 
         normalFirework.SendEvent("StopPlay");
         sidareFirework.SendEvent("StopPlay");
 
-        yield return new WaitForSeconds(3.0f);
+        yield return new WaitForSeconds(2.0f);
 
         // 花火効果音を止める
         soundFirework.Stop();
