@@ -31,7 +31,7 @@ public class BaseballBat : MonoBehaviour
     /// <summary>
     /// オブジェクトの打ち出し角度
     /// </summary>
-    private const float hitAngle = 45;
+    private const float hitAngle = 25;
 
     private const float hitPower = 1.2f;
 
