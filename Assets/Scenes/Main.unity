@@ -3024,6 +3024,18 @@ MonoBehaviour:
   boneID: 99
   ikEnabled: 0
   ikWeight: 1
+--- !u!114 &758252923 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9187945081993189521, guid: 2cefab6338714e544a2e6cd560d68c8e,
+    type: 3}
+  m_PrefabInstance: {fileID: 6653724497681084166}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &764317042 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -5607054874351165527, guid: b01a9d8c8586a9d488a20cb0a75f39b1,
@@ -8754,6 +8766,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetManagerObj: {fileID: 1819392452}
+  logoImage: {fileID: 758252923}
   tapStartText: {fileID: 1223745100}
 --- !u!1 &2063004776 stripped
 GameObject:
