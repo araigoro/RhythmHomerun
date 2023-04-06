@@ -41,6 +41,14 @@ public class TargetManager : MonoBehaviour
 
         // すべてのターゲットプレハブを生成して、ターゲットプールに追加する
         CreateAllTargetPrefabs();
+    }
+
+    /// <summary>
+    /// 投球開始
+    /// </summary>
+    public void Playball()
+    {
+        stagingManager.SwitchMainCamera();
 
         SelectRandomActiveTarget();
     }

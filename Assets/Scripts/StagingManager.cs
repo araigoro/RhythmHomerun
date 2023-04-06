@@ -57,6 +57,9 @@ public class StagingManager : MonoBehaviour
         // 花火を停止
         normalFirework.SendEvent("StopPlay");
         sidareFirework.SendEvent("StopPlay");
+
+        // スイングボタンは非表示
+        buttonSwing.SetActive(false);
     }
 
     /// <summary>
