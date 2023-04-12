@@ -16,24 +16,24 @@ public class BaseballBat : MonoBehaviour
     /// <summary>
     /// 打ったオブジェクトを飛ばす目標地点（レフト方向）
     /// </summary>
-    private readonly Vector3[] homerunPointLeft = { new Vector3(-27, 4, 35), new Vector3(-25, 4, 43), new Vector3(-20, 4, 47) };
+    private readonly Vector3[] homerunPointLeft = { new Vector3(-27, 0, 30), new Vector3(-25, 0, 30), new Vector3(-20, 0, 30) };
 
     /// <summary>
     /// 打ったオブジェクトを飛ばす目標地点（センター方向）
     /// </summary>
-    private readonly Vector3[] homerunPointCenter = { new Vector3(0, 5, 45), new Vector3(-10, 4, 40), new Vector3(7, 3, 48) };
+    private readonly Vector3[] homerunPointCenter = { new Vector3(0, 0, 35), new Vector3(-10, 0, 35), new Vector3(7, 0, 35) };
 
     /// <summary>
     /// 打ったオブジェクトを飛ばす目標地点（ライト方向）
     /// </summary>
-    private readonly Vector3[] homerunPointRight = { new Vector3(31, 3, 30), new Vector3(13, 3, 47), new Vector3(23, 4, 48) };
+    private readonly Vector3[] homerunPointRight = { new Vector3(31, 0, 30), new Vector3(13, 0, 30), new Vector3(23, 0, 30) };
 
     /// <summary>
     /// オブジェクトの打ち出し角度
     /// </summary>
-    private const float hitAngle = 45;
+    private const float hitAngle = 30;
 
-    private const float hitPower = 1.2f;
+    private const float hitPower = 1.0f;
 
     /// <summary>
     ///　打ったオブジェクトをレフトに飛ばすかどうかの基準値
