@@ -34,10 +34,9 @@ public class StagingManager : MonoBehaviour
     private CinemachineVirtualCamera followVCamera;
 
     /// <summary>
-    /// 花火
+    /// 花火、紙吹雪演出
     /// </summary>
-    [SerializeField] private VisualEffect normalFirework;
-    [SerializeField] private VisualEffect sidareFirework;
+    [SerializeField] private VisualEffect[] visualEffects;
 
     /// <summary>
     /// Follow Camera保持テーブル
@@ -54,9 +53,11 @@ public class StagingManager : MonoBehaviour
         //    followCameraPool.Add(followCamera);
         //}
 
-        // 花火を停止
-        normalFirework.SendEvent("StopPlay");
-        sidareFirework.SendEvent("StopPlay");
+        // VisualEffectを停止
+        foreach (var visualEffect in visualEffects)
+        {
+            visualEffect.SendEvent("StopPlay");
+        }
 
         // スイングボタンは非表示
         buttonSwing.SetActive(false);
@@ -125,11 +126,12 @@ public class StagingManager : MonoBehaviour
     {
         Debug.Log("HOMERUN!!");
 
-        // 花火の演出開始
-        normalFirework.transform.position = target.transform.position;
-        sidareFirework.transform.position = target.transform.position;
-        normalFirework.SendEvent("StartPlay");
-        sidareFirework.SendEvent("StartPlay");
+        // VisualEffectの演出開始
+        foreach (var visualEffect in visualEffects)
+        {
+            visualEffect.transform.position = target.transform.position;
+            visualEffect.SendEvent("StartPlay");
+        }
 
         // 一定時間で消す(強引…)
         StartCoroutine(ProcessingHomerunEffect(target));
@@ -141,12 +143,15 @@ public class StagingManager : MonoBehaviour
     /// <returns>IEnumerator</returns>
     public IEnumerator ProcessingHomerunEffect(Target target)
     {
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(0.5f);
 
-        normalFirework.SendEvent("StopPlay");
-        sidareFirework.SendEvent("StopPlay");
+        //// VisualEffectを停止
+        //foreach (var visualEffect in visualEffects)
+        //{
+        //    visualEffect.SendEvent("StopPlay");
+        //}
 
-        yield return new WaitForSeconds(3.0f);
+        //yield return new WaitForSeconds(1.0f);
 
         target.Stay();
     }

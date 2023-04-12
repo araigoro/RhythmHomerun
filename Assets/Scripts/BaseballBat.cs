@@ -16,7 +16,7 @@ public class BaseballBat : MonoBehaviour
     /// <summary>
     /// 打ったオブジェクトを飛ばす目標地点（レフト方向）
     /// </summary>
-    private readonly Vector3[] homerunPointLeft = { new Vector3(-27, 0, 30), new Vector3(-25, 0, 30), new Vector3(-20, 0, 30) };
+    private readonly Vector3[] homerunPointLeft = { new Vector3(-27, 0, 35), new Vector3(-25, 0, 35), new Vector3(-20, 0, 35) };
 
     /// <summary>
     /// 打ったオブジェクトを飛ばす目標地点（センター方向）
@@ -26,7 +26,7 @@ public class BaseballBat : MonoBehaviour
     /// <summary>
     /// 打ったオブジェクトを飛ばす目標地点（ライト方向）
     /// </summary>
-    private readonly Vector3[] homerunPointRight = { new Vector3(31, 0, 30), new Vector3(13, 0, 30), new Vector3(23, 0, 30) };
+    private readonly Vector3[] homerunPointRight = { new Vector3(31, 0, 35), new Vector3(13, 0, 35), new Vector3(23, 0, 35) };
 
     /// <summary>
     /// オブジェクトの打ち出し角度
