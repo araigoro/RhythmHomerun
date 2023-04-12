@@ -34,7 +34,7 @@ public class StagingManager : MonoBehaviour
     private CinemachineVirtualCamera followVCamera;
 
     /// <summary>
-    /// 花火、紙吹雪演出
+    /// VisualEffect演出用プレハブ
     /// </summary>
     [SerializeField] private VisualEffect[] visualEffects;
 
@@ -42,6 +42,11 @@ public class StagingManager : MonoBehaviour
     /// Follow Camera保持テーブル
     /// </summary>
     private List<FollowCamera> followCameraPool = new List<FollowCamera>();
+
+    /// <summary>
+    /// 生成されたアクティブなエフェクト用オブジェクト
+    /// </summary>
+    private List<VisualEffect> activeEffects = new List<VisualEffect>();
 
     private void Start()
     {
@@ -53,14 +58,20 @@ public class StagingManager : MonoBehaviour
         //    followCameraPool.Add(followCamera);
         //}
 
-        // VisualEffectを停止
-        foreach (var visualEffect in visualEffects)
-        {
-            visualEffect.SendEvent("StopPlay");
-        }
-
         // スイングボタンは非表示
         buttonSwing.SetActive(false);
+    }
+
+    /// <summary>
+    /// VisualEffectを生成して表示する
+    /// </summary>
+    /// <param name="position">生成する座標</param>
+    public void CreateVisualEffect(Vector3 position)
+    {
+        var prefab = visualEffects[UnityEngine.Random.Range(0, visualEffects.Length)];
+        var visualEffect = Instantiate(prefab, position, Quaternion.identity);
+        visualEffect.SendEvent("StartPlay");
+        activeEffects.Add(visualEffect);
     }
 
     /// <summary>
@@ -126,12 +137,8 @@ public class StagingManager : MonoBehaviour
     {
         Debug.Log("HOMERUN!!");
 
-        // VisualEffectの演出開始
-        foreach (var visualEffect in visualEffects)
-        {
-            visualEffect.transform.position = target.transform.position;
-            visualEffect.SendEvent("StartPlay");
-        }
+        // VisualEffectの演出追加
+        CreateVisualEffect(target.transform.position);
 
         // 一定時間で消す(強引…)
         StartCoroutine(ProcessingHomerunEffect(target));
@@ -144,14 +151,6 @@ public class StagingManager : MonoBehaviour
     public IEnumerator ProcessingHomerunEffect(Target target)
     {
         yield return new WaitForSeconds(0.5f);
-
-        //// VisualEffectを停止
-        //foreach (var visualEffect in visualEffects)
-        //{
-        //    visualEffect.SendEvent("StopPlay");
-        //}
-
-        //yield return new WaitForSeconds(1.0f);
 
         target.Stay();
     }
