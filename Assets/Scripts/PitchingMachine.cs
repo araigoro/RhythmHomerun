@@ -11,7 +11,6 @@ public class PitchingMachine : MonoBehaviour
     /// </summary>
     [SerializeField] private AudioClip soundShot;
 
-
     /// <summary>
     /// ターゲットクラス
     /// </summary>

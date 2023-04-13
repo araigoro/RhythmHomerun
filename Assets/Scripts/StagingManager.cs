@@ -61,7 +61,6 @@ public class StagingManager : MonoBehaviour
         followVCamera.LookAt = targetObject.transform;
     }
 
-
     /// <summary>
     /// 打球を追う用のシネマカメラをランダムに選ぶ
     /// </summary>
@@ -88,8 +87,11 @@ public class StagingManager : MonoBehaviour
             followVCamera.LookAt = null;
             followVCamera.gameObject.SetActive(false);
         }
-        buttonSwing.SetActive(true);
+
         mainVCamera.gameObject.SetActive(true);
+
+        // スイングボタンを表示する
+        buttonSwing.SetActive(true);
     }
 
 

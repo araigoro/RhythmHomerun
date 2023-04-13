@@ -1,8 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UniRx;
 
 public class BaseballBat : MonoBehaviour
 {
@@ -57,19 +53,13 @@ public class BaseballBat : MonoBehaviour
     private Target activeTarget;
 
     /// <summary>
-    /// ターゲットマネージャークラス
-    /// </summary>
-    private TargetManager targetManager;
-
-    /// <summary>
     /// バットのコライダー
     /// </summary>
-    private Collider collider;
+    private Collider batCollider;
 
     private void Awake()
     {
-        targetManager = targetManagerObj.GetComponent<TargetManager>();
-        collider = this.GetComponent<Collider>();
+        batCollider = this.GetComponent<Collider>();
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -175,7 +165,7 @@ public class BaseballBat : MonoBehaviour
     /// </summary>
     public void ColliderOn()
     {
-        collider.enabled = true;
+        batCollider.enabled = true;
     }
 
     /// <summary>
@@ -183,6 +173,6 @@ public class BaseballBat : MonoBehaviour
     /// </summary>
     public void ColldierOff()
     {
-        collider.enabled = false;
+        batCollider.enabled = false;
     }
 }

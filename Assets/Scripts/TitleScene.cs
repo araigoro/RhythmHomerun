@@ -21,7 +21,6 @@ public class TitleScene : MonoBehaviour
     /// </summary>
     [SerializeField] private TextMeshProUGUI tapStartText;
 
-
     /// <summary>
     /// 開始テキストが点滅する周期を設定
     /// </summary>
@@ -98,10 +97,10 @@ public class TitleScene : MonoBehaviour
         tapStartText.enabled = false;
         yield return new WaitForSeconds(fadeTime);
 
-        // 画面がタップされたら開始
+        // タイトル表示を消す
         gameObject.SetActive(false);
 
-        // ピッチャーの投球を開始する
+        // ゲームを開始する
         targetManager.Playball();
     }
 

@@ -1,15 +1,7 @@
-using System;
-using System.Collections;
 using UnityEngine;
-using UniRx;
 
 public class Target : MonoBehaviour
 {
-    /// <summary>
-    /// 非表示にするまでの時間(単位：秒)
-    /// </summary>
-    private const float aliveSeconds = 4.0f;
-
     /// <summary>
     /// 地面のタグ
     /// </summary>
@@ -19,12 +11,6 @@ public class Target : MonoBehaviour
     /// スタンドのタグ
     /// </summary>
     private const string stand = "stand";
-
-    /// <summary>
-    /// ターゲットのCollider
-    /// ※ターゲットによってコライダーの種類が異なるので、Collider型で探して保持しておく
-    /// </summary>
-    private Collider targetCollider;
 
     /// <summary>
     /// ターゲットのRigitbody
@@ -37,22 +23,21 @@ public class Target : MonoBehaviour
     private TrailRenderer trailRenderer;
 
     /// <summary>
-    /// ターゲットの状態の種類
+    /// ターゲットのステータス
     /// </summary>
     public enum State
     {
-        Stay,
-        WaitingShot,
-        Hit,
-        Fly,
-        StandIn
+        Stay,           //非アクティブで隠れている
+        WaitingShot,    //投手が保持していて、投げる前
+        Hit,            //バットに打たれた瞬間
+        Fly,            //打たれて飛んでいる
+        StandIn         //スタンドイン
     }
 
     /// <summary>
     /// 初期状態
     /// </summary>
     private State status = State.Stay;
-
 
     /// <summary>
     /// 現在のターゲットの状態
@@ -85,7 +70,6 @@ public class Target : MonoBehaviour
 
     private void Awake()
     {
-        targetCollider = this.gameObject.GetComponent<Collider>();
         targetRigitbody = this.gameObject.GetComponent<Rigidbody>();
         trailRenderer = this.gameObject.GetComponent<TrailRenderer>();
         trailRenderer.enabled = false;
