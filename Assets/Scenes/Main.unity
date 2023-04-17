@@ -7739,10 +7739,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetPrefabs:
-  - {fileID: 7241503185792172983, guid: 352ea163558e9da4c81c2fa72ebc599f, type: 3}
-  - {fileID: 7241503185792172983, guid: 8e62fe8dae4bf104fabfad5a042aed6c, type: 3}
-  - {fileID: 7241503185792172983, guid: 4e424c429009e0f43b72403b0403f316, type: 3}
-  - {fileID: 6003936292375450369, guid: ad8105dc5ac4cdd40ab7261f0f8a9953, type: 3}
+  - {fileID: 5198035327543024215, guid: b353e4f11399cba4ebaa4991f81bf808, type: 3}
+  - {fileID: 7677874803949524309, guid: ff231b207a5aedf4bb83957263af79ec, type: 3}
   pitchingMachineObj: {fileID: 1013925462}
   baseballBatObj: {fileID: 1480589842}
   stagingManagerObj: {fileID: 1093007916}
