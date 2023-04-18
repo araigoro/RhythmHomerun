@@ -95,6 +95,11 @@ public class TargetManager : MonoBehaviour
 
     private void Update()
     {
+        if (activeTarget == null)
+        {
+            return;
+        }
+
         // ターゲットのステータスが変わっていない場合、処理をスキップ
         if (activeTarget.NowStatus == latestTargetState)
         {
