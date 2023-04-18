@@ -1,8 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UniRx;
 
 public class BaseballBat : MonoBehaviour
 {
@@ -11,6 +7,9 @@ public class BaseballBat : MonoBehaviour
     /// </summary>
     [SerializeField] private AudioClip soundHit;
 
+    /// <summary>
+    /// ターゲットマネージャーのオブジェクト
+    /// </summary>
     [SerializeField] GameObject targetManagerObj;
 
     /// <summary>
@@ -33,6 +32,9 @@ public class BaseballBat : MonoBehaviour
     /// </summary>
     private const float hitAngle = 30;
 
+    /// <summary>
+    /// 打ち返す強さ
+    /// </summary>
     private const float hitPower = 1.0f;
 
     /// <summary>
@@ -45,43 +47,31 @@ public class BaseballBat : MonoBehaviour
     /// </summary>
     private const float borderRightDirection = 0.0f;
 
+    /// <summary>
+    /// 現在アクティブになっているターゲット
+    /// </summary>
     private Target activeTarget;
 
-    private TargetManager targetManager;
-
-    private Collider collider;
+    /// <summary>
+    /// バットのコライダー
+    /// </summary>
+    private Collider batCollider;
 
     private void Awake()
     {
-        targetManager = targetManagerObj.GetComponent<TargetManager>();
-        collider = this.GetComponent<Collider>();
+        batCollider = this.GetComponent<Collider>();
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        // 対象のGameObjectがターゲットオブジェクトか？
-        // 違和感
         Target collisionTarget = collision.gameObject.GetComponent<Target>();
+
+        // 衝突したのがアクティブになっているターゲットであれば
         if (activeTarget == collisionTarget)
         {
             // 打つ！
             HitTarget(collisionTarget);
         }
-    }
-
-    public void RegisterTarget(Target target)
-    {
-        activeTarget = target;
-    }
-
-    public void ColliderOn()
-    {
-        collider.enabled = true;
-    }
-
-    public void ColldierOff()
-    {
-        collider.enabled = false;
     }
 
     /// <summary>
@@ -96,6 +86,7 @@ public class BaseballBat : MonoBehaviour
         //ターゲットオブジェクトを飛ばす先を取得
         var targetPosition = SelectTargetPoint(target);
 
+        // ターゲットのステータスを変更
         target.Hit();
 
         //打撃音を鳴らす
@@ -158,5 +149,30 @@ public class BaseballBat : MonoBehaviour
     private bool IsRightHit(Target target)
     {
         return target.IsSmallPositionZ(borderRightDirection);
+    }
+
+    /// <summary>
+    /// アクティブになっているターゲットを保持
+    /// </summary>
+    /// <param name="target">ターゲット</param>
+    public void RegisterActiveTarget(Target target)
+    {
+        activeTarget = target;
+    }
+
+    /// <summary>
+    /// バットのコライダーをオンにする
+    /// </summary>
+    public void ColliderOn()
+    {
+        batCollider.enabled = true;
+    }
+
+    /// <summary>
+    /// バットのコライダーをオフにする
+    /// </summary>
+    public void ColldierOff()
+    {
+        batCollider.enabled = false;
     }
 }

@@ -6,9 +6,6 @@ using UniRx;
 using System;
 using Cinemachine;
 
-
-
-
 public class StagingManager : MonoBehaviour
 {
     /// <summary>
@@ -27,10 +24,8 @@ public class StagingManager : MonoBehaviour
     [SerializeField] private GameObject buttonSwing;
 
     /// <summary>
-    /// Follow Cameraクラス
+    /// 打球を追う用カメラのシネマシーンカメラクラス
     /// </summary>
-    //private FollowCamera followCamera;
-
     private CinemachineVirtualCamera followVCamera;
 
     /// <summary>
@@ -50,14 +45,6 @@ public class StagingManager : MonoBehaviour
 
     private void Start()
     {
-        //すべてのFollow Cameraをプールに保持する
-        //foreach (var followCameraObj in followCameras)
-        //{
-        //    followCameraObj.SetActive(false);
-        //    followCamera = followCameraObj.GetComponent<FollowCamera>();
-        //    followCameraPool.Add(followCamera);
-        //}
-
         // スイングボタンは非表示
         buttonSwing.SetActive(false);
     }
@@ -82,16 +69,19 @@ public class StagingManager : MonoBehaviour
     {
         mainVCamera.gameObject.SetActive(false);
         buttonSwing.SetActive(false);
+
+        // 打球を追う用のカメラを取得
         followVCamera = SelectFollowVCamera();
         followVCamera.gameObject.SetActive(true);
-        followVCamera.LookAt = targetObject.transform;
 
-        //followCamera = SelectRandomFollowCamera();
-        //followCamera.SetActive(true);
-        //followCamera.ResetAngle();
-        //followCamera.FollowTarget(target);
+        // 渡されたターゲットを追う
+        followVCamera.LookAt = targetObject.transform;
     }
 
+    /// <summary>
+    /// 打球を追う用のシネマカメラをランダムに選ぶ
+    /// </summary>
+    /// <returns></returns>
     private CinemachineVirtualCamera SelectFollowVCamera()
     {
         //無限ループ防止
@@ -108,31 +98,24 @@ public class StagingManager : MonoBehaviour
     /// </summary>
     public void SwitchMainCamera()
     {
-        //followCamera.CancelFollowTarget();
         if (followVCamera != null)
         {
+            // ターゲットを追うのをやめる
             followVCamera.LookAt = null;
             followVCamera.gameObject.SetActive(false);
         }
-        buttonSwing.SetActive(true);
+
         mainVCamera.gameObject.SetActive(true);
+
+        // スイングボタンを表示する
+        buttonSwing.SetActive(true);
     }
+
 
     /// <summary>
-    /// ランダムにFollow Cameraを選択する
+    /// 花火エフェクトの生成
     /// </summary>
-    /// <returns>Follow Camera（選べなかった場合はnull）</returns>
-    private FollowCamera SelectRandomFollowCamera()
-    {
-        //無限ループ防止
-        if (followCameraPool.Count == 0)
-        {
-            return null;
-        }
-
-        return followCameraPool[UnityEngine.Random.Range(0, followCameraPool.Count)];
-    }
-
+    /// <param name="target">ターゲット</param>
     public void GenerateHomerunEffect(Target target)
     {
         Debug.Log("HOMERUN!!");
@@ -152,6 +135,7 @@ public class StagingManager : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
 
+        // ターゲットのステータスを変更
         target.Stay();
     }
 
