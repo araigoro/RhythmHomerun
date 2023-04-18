@@ -8707,7 +8707,7 @@ GameObject:
   - component: {fileID: 1834834416530949376}
   - component: {fileID: 1851636499208945213}
   m_Layer: 0
-  m_Name: BreakableCube (1)
+  m_Name: BreakableCube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8770,6 +8770,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fb30bbd3a758254fb42c8a8f5551940, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  brokenObject: {fileID: 1220212171733305108, guid: bb5d978f47cd14049b727221757ede22,
+    type: 3}
 --- !u!96 &1851636499208945213
 TrailRenderer:
   serializedVersion: 2

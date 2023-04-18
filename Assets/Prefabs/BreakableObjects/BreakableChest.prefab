@@ -10713,6 +10713,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fb30bbd3a758254fb42c8a8f5551940, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  brokenObject: {fileID: 2724200618411704004, guid: 768cac42b19649c4dab709567f7af032,
+    type: 3}
 --- !u!96 &2806081855176802419
 TrailRenderer:
   serializedVersion: 2
