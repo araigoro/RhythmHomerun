@@ -11,18 +11,19 @@ public class PitchingMachine : MonoBehaviour
     /// </summary>
     [SerializeField] private AudioClip soundShot;
 
-    private Target target;
-
     /// <summary>
-    /// 投げる間隔(単位：フレーム)
+    /// ターゲットクラス
     /// </summary>
-    private const int shotInterval = 2000;
+    private Target target;
 
     /// <summary>
     /// 投げるオブジェクトの角度
     /// </summary>
     private const float shotAngle = 30;
 
+    /// <summary>
+    /// 投げる強さ
+    /// </summary>
     private const float shotPower = 1.0f;
 
     /// <summary>
@@ -45,58 +46,41 @@ public class PitchingMachine : MonoBehaviour
         animator = gameObject.GetComponent<Animator>();
     }
 
-    [System.Obsolete]
-    private void Update()
-    {
-    }
-
     /// <summary>
     /// 所持しているターゲットを投げる
     /// </summary>
-    private void ThrowTarget()
+    public void ThrowTarget()
     {
+        // ターゲットを保持していない場合は処理を飛ばす
         if (target == null)
         {
-            Debug.Log("Target is null!!");
             return;
-            //yield return null;
         }
 
-        // 初期位置に設定
         target.SetActive(true);
+        // 初期位置に設定
         var position = new Vector3(gameObject.transform.position.x - 0.2f,
                                     gameObject.transform.position.y + 1.0f,
                                     gameObject.transform.position.z);
         target.Respawn(position);
-        Debug.Log(strikePosition);
-        Debug.Log(shotAngle);
+
+        // ターゲットを狙った位置へ放物線を描いて飛ばす
         target.MoveParabola(strikePosition,shotPower, shotAngle);
 
         // 投げる音を鳴らす
         AudioSource.PlayClipAtPoint(soundShot, gameObject.transform.position);
 
-        LoseTarget();
-    }
-
-    private void LoseTarget()
-    {
+        // 投げ終わったのでターゲットの保持をやめる
         target = null;
-
-        if (target == null)
-        {
-            Debug.Log("null");
-        }
     }
 
-    public void OnThrowEvent()
-    {
-        ThrowTarget();
-    }
-
+    /// <summary>
+    /// 渡されたターゲットを保持する
+    /// </summary>
+    /// <param name="target">ターゲット</param>
     public void Add(Target target)
     {
         this.target = target;
-        Debug.Log(target + "in pitching machine");
 
         // 投球開始
         // 投球モーションに切り替える

@@ -1,9 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UniRx;
-using UniRx.Triggers;
-using System;
 
 public class TargetManager : MonoBehaviour
 {
@@ -12,10 +8,19 @@ public class TargetManager : MonoBehaviour
     /// </summary>
     [SerializeField] private GameObject[] targetPrefabs;
 
+    /// <summary>
+    /// 投手のオブジェクト
+    /// </summary>
     [SerializeField] private GameObject pitchingMachineObj;
 
+    /// <summary>
+    /// バットのオブジェクト
+    /// </summary>
     [SerializeField] private GameObject baseballBatObj;
 
+    /// <summary>
+    /// ステージングマネージャーのオブジェクト
+    /// </summary>
     [SerializeField] private GameObject stagingManagerObj;
 
     /// <summary>
@@ -23,14 +28,29 @@ public class TargetManager : MonoBehaviour
     /// </summary>
     private List<Target> targetPool = new List<Target>();
 
+    /// <summary>
+    /// 現在ゲームシーン上でアクティブになっているターゲット
+    /// </summary>
     private Target activeTarget;
 
+    /// <summary>
+    /// 直近のターゲットの状態
+    /// </summary>
     private Target.State latestTargetState = Target.State.Stay;
 
+    /// <summary>
+    /// 投手のクラス
+    /// </summary>
     private PitchingMachine pitchingMachine;
 
+    /// <summary>
+    /// バットのクラス
+    /// </summary>
     private BaseballBat baseballBat;
 
+    /// <summary>
+    /// ステージングマネージャーのクラス
+    /// </summary>
     private StagingManager stagingManager;
 
     private void Awake()
@@ -48,58 +68,71 @@ public class TargetManager : MonoBehaviour
     /// </summary>
     public void Playball()
     {
+        // メインカメラに切り替える
         stagingManager.SwitchMainCamera();
 
+        // ランダムで1つアクティブにするターゲットを選ぶ
         SelectRandomActiveTarget();
     }
 
+    /// <summary>
+    /// ランダムで1つアクティブにするターゲットを選ぶ
+    /// </summary>
     private void SelectRandomActiveTarget()
     {
+        // ランダムで１つターゲットを選ぶ
         activeTarget = SelectRandomTarget();
-        activeTarget.WaitingShot();
-        pitchingMachine.Add(activeTarget);
-        baseballBat.RegisterTarget(activeTarget);
 
-        Debug.Log("add target");
+        // ターゲットのステータスを投球待ちに変更
+        activeTarget.WaitingShot();
+
+        // 選ばれたターゲットを投手に渡す
+        pitchingMachine.Add(activeTarget);
+
+        // 選ばれたターゲットをバットに認識させる
+        baseballBat.RegisterActiveTarget(activeTarget);
     }
 
     private void Update()
     {
-        if ((Time.frameCount % 1000) == 0)
+        // ターゲットのステータスが変わっていない場合、処理をスキップ
+        if (activeTarget.NowStatus == latestTargetState)
         {
-            Debug.Log("マネージャー内:" + activeTarget + ":" + activeTarget.Status);
+            return;
         }
 
-        activeTarget.OnUpdate();
+        // ステータスを更新
+        latestTargetState = activeTarget.NowStatus;
 
-        // ステータスが変わった時だけ処理したい
-        if (activeTarget.Status != latestTargetState)
+        // ターゲットが打たれている時
+        if (activeTarget.IsHit())
         {
-            latestTargetState = activeTarget.Status;
+            // 打球を追うカメラに切り替える
+            stagingManager.SwitchFollowCamera(activeTarget.GetObj());
+        }
 
-            // 打った→ターゲット追跡カメラに切り替え
-            if (activeTarget.IsHit())
-            {
-                stagingManager.SwitchFollowCamera(activeTarget.GetObj());
-                activeTarget.Fly();
-            }
+        // ターゲットがスタンドインした時
+        if (activeTarget.IsStandIn())
+        {
+            // ホームラン演出を生成
+            stagingManager.GenerateHomerunEffect(activeTarget);
 
-            // スタンドインした→ホームラン演出
-            if (activeTarget.IsStandIn())
-            {
-                stagingManager.GenerateHomerunEffect(activeTarget);
-                Debug.Log(activeTarget + ":" + activeTarget.Status);
-                activeTarget.ResetVelocity();
-            }
+            // ターゲットの速度を0にする
+            activeTarget.ResetVelocity();
+        }
 
-            // 待機状態になった→メインカメラに切り替えて次のターゲットを設定
-            if (activeTarget.IsStay())
-            {
-                stagingManager.SwitchMainCamera();
-                activeTarget.Respawn(transform.position);
-                activeTarget.SetActive(false);
-                SelectRandomActiveTarget();
-            }
+        // ターゲットが待機ステータスになった時
+        if (activeTarget.IsStay())
+        {
+            // メインカメラに切り替える
+            stagingManager.SwitchMainCamera();
+
+            // アクティブになっているターゲットを初期位置に戻す
+            activeTarget.Respawn(transform.position);
+            activeTarget.SetActive(false);
+
+            // 新しいターゲットを選ぶ
+            SelectRandomActiveTarget();
         }
     }
 
@@ -108,6 +141,7 @@ public class TargetManager : MonoBehaviour
     /// </summary>
     private void CreateAllTargetPrefabs()
     {
+        // プールの中身をリセット
         targetPool.Clear();
 
         // 登録されているすべてのターゲットを生成する
@@ -138,6 +172,7 @@ public class TargetManager : MonoBehaviour
 
         do
         {
+            // プールからランダムに１つ選ぶ
             target = targetPool[UnityEngine.Random.Range(0, targetPool.Count)];
 
         } while (activeTarget == target);
