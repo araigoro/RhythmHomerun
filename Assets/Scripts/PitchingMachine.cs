@@ -49,7 +49,7 @@ public class PitchingMachine : MonoBehaviour
     /// <summary>
     /// 所持しているターゲットを投げる
     /// </summary>
-    public void ThrowTarget()
+    public void OnThrowEvent()
     {
         // ターゲットを保持していない場合は処理を飛ばす
         if (target == null)

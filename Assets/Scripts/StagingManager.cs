@@ -34,11 +34,6 @@ public class StagingManager : MonoBehaviour
     [SerializeField] private VisualEffect[] visualEffects;
 
     /// <summary>
-    /// Follow Camera保持テーブル
-    /// </summary>
-    private List<FollowCamera> followCameraPool = new List<FollowCamera>();
-
-    /// <summary>
     /// 生成されたアクティブなエフェクト用オブジェクト
     /// </summary>
     private List<VisualEffect> activeEffects = new List<VisualEffect>();
