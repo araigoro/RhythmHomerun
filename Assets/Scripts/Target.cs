@@ -1,20 +1,16 @@
-using System;
-using System.Collections;
 using UnityEngine;
-using UniRx;
 
 public class Target : MonoBehaviour
 {
     /// <summary>
-    /// 非表示にするまでの時間(単位：秒)
+    /// 地面のタグ
     /// </summary>
-    private const float aliveSeconds = 4.0f;
+    private const string ground = "ground";
 
     /// <summary>
-    /// ターゲットのCollider
-    /// ※ターゲットによってコライダーの種類が異なるので、Collider型で探して保持しておく
+    /// スタンドのタグ
     /// </summary>
-    private Collider targetCollider;
+    private const string stand = "stand";
 
     /// <summary>
     /// ターゲットのRigitbody
@@ -26,17 +22,27 @@ public class Target : MonoBehaviour
     /// </summary>
     private TrailRenderer trailRenderer;
 
+    /// <summary>
+    /// ターゲットのステータス
+    /// </summary>
     public enum State
     {
-        Stay,
-        WaitingShot,
-        Hit,
-        Fly,
-        StandIn
+        Stay,           //非アクティブで隠れている
+        WaitingShot,    //投手が保持していて、投げる前
+        Hit,            //バットに打たれた瞬間
+        Fly,            //打たれて飛んでいる
+        StandIn         //スタンドイン
     }
 
+    /// <summary>
+    /// 初期状態
+    /// </summary>
     private State status = State.Stay;
-    public State Status
+
+    /// <summary>
+    /// 現在のターゲットの状態
+    /// </summary>
+    public State NowStatus
     {
         get
         {
@@ -64,30 +70,22 @@ public class Target : MonoBehaviour
 
     private void Awake()
     {
-        targetCollider = this.gameObject.GetComponent<Collider>();
         targetRigitbody = this.gameObject.GetComponent<Rigidbody>();
         trailRenderer = this.gameObject.GetComponent<TrailRenderer>();
         trailRenderer.enabled = false;
     }
 
-    public void OnUpdate()
-    {
-        //if (this.gameObject.transform.position.y <= 0)
-        //{
-        //    Homerun();
-        //}
-    }
-
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "ground")
+        // 地面と衝突したら
+        if (collision.gameObject.tag == ground)
         {
             Stay();
             ResetVelocity();
-            Debug.Log("打たれず");
         }
 
-        if (collision.gameObject.tag == "stand")
+        // スタンドと衝突したら
+        if (collision.gameObject.tag == stand)
         {
             Homerun();
             ResetVelocity();
@@ -166,61 +164,97 @@ public class Target : MonoBehaviour
         return this.gameObject.transform.position.z < targetPositionZ;
     }
 
+
+    /// <summary>
+    /// 打たれた状態に変更
+    /// </summary>
     public void Hit()
     {
-        Status = State.Hit;
+        NowStatus = State.Hit;
     }
 
+    /// <summary>
+    /// ターゲットのオブジェクト同一かどうか
+    /// </summary>
+    /// <param name="gameObject">オブジェクト</param>
+    /// <returns></returns>
     public bool IsSameObj(GameObject gameObject)
     {
         return this.gameObject == gameObject;
     }
 
+    /// <summary>
+    /// 打たれているかどうか
+    /// </summary>
+    /// <returns></returns>
     public bool IsHit()
     {
-        return Status == State.Hit;
+        return NowStatus == State.Hit;
     }
 
+    /// <summary>
+    /// ターゲットのオブジェクトを返す
+    /// </summary>
+    /// <returns></returns>
     public GameObject GetObj()
     {
         return this.gameObject;
     }
 
+    /// <summary>
+    /// スタンドインしているかどうか
+    /// </summary>
+    /// <returns></returns>
     public bool IsStandIn()
     {
-        return Status == State.StandIn;
+        return NowStatus == State.StandIn;
     }
 
+    /// <summary>
+    /// 投げられかどうか
+    /// </summary>
+    /// <returns></returns>
     public bool IsWaitingShot()
     {
-        return Status == State.WaitingShot;
+        return NowStatus == State.WaitingShot;
     }
 
+    /// <summary>
+    /// 状態を投げられ待ちに変更
+    /// </summary>
     public void WaitingShot()
     {
-        Status = State.WaitingShot;
+        NowStatus = State.WaitingShot;
     }
 
+    /// <summary>
+    /// 状態をホームランに変更
+    /// </summary>
     public void Homerun()
     {
-        Status = State.StandIn;
+        NowStatus = State.StandIn;
     }
 
+    /// <summary>
+    /// 状態を待機中に変更
+    /// </summary>
     public void Stay()
     {
-        Status = State.Stay;
+        NowStatus = State.Stay;
     }
 
+    /// <summary>
+    /// 待機中かどうか
+    /// </summary>
+    /// <returns></returns>
     public bool IsStay()
     {
-        return Status == State.Stay;
+        return NowStatus == State.Stay;
     }
 
-    public void Fly()
-    {
-        Status = State.Fly;
-    }
-
+    /// <summary>
+    /// 速度をリセット
+    /// </summary>
     public void ResetVelocity()
     {
         targetRigitbody.velocity = Vector3.zero;

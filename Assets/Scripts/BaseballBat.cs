@@ -1,8 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UniRx;
 
 public class BaseballBat : MonoBehaviour
 {
@@ -11,29 +7,35 @@ public class BaseballBat : MonoBehaviour
     /// </summary>
     [SerializeField] private AudioClip soundHit;
 
+    /// <summary>
+    /// ターゲットマネージャーのオブジェクト
+    /// </summary>
     [SerializeField] GameObject targetManagerObj;
 
     /// <summary>
     /// 打ったオブジェクトを飛ばす目標地点（レフト方向）
     /// </summary>
-    private readonly Vector3[] homerunPointLeft = { new Vector3(-27, 4, 35), new Vector3(-25, 4, 43), new Vector3(-20, 4, 47) };
+    private readonly Vector3[] homerunPointLeft = { new Vector3(-27, 0, 35), new Vector3(-25, 0, 35), new Vector3(-20, 0, 35) };
 
     /// <summary>
     /// 打ったオブジェクトを飛ばす目標地点（センター方向）
     /// </summary>
-    private readonly Vector3[] homerunPointCenter = { new Vector3(0, 5, 45), new Vector3(-10, 4, 40), new Vector3(7, 3, 48) };
+    private readonly Vector3[] homerunPointCenter = { new Vector3(0, 0, 35), new Vector3(-10, 0, 35), new Vector3(7, 0, 35) };
 
     /// <summary>
     /// 打ったオブジェクトを飛ばす目標地点（ライト方向）
     /// </summary>
-    private readonly Vector3[] homerunPointRight = { new Vector3(31, 3, 30), new Vector3(13, 3, 47), new Vector3(23, 4, 48) };
+    private readonly Vector3[] homerunPointRight = { new Vector3(31, 0, 35), new Vector3(13, 0, 35), new Vector3(23, 0, 35) };
 
     /// <summary>
     /// オブジェクトの打ち出し角度
     /// </summary>
-    private const float hitAngle = 45;
+    private const float hitAngle = 30;
 
-    private const float hitPower = 1.2f;
+    /// <summary>
+    /// 打ち返す強さ
+    /// </summary>
+    private const float hitPower = 1.0f;
 
     /// <summary>
     ///　打ったオブジェクトをレフトに飛ばすかどうかの基準値
@@ -45,43 +47,31 @@ public class BaseballBat : MonoBehaviour
     /// </summary>
     private const float borderRightDirection = 0.0f;
 
+    /// <summary>
+    /// 現在アクティブになっているターゲット
+    /// </summary>
     private Target activeTarget;
 
-    private TargetManager targetManager;
-
-    private Collider collider;
+    /// <summary>
+    /// バットのコライダー
+    /// </summary>
+    private Collider batCollider;
 
     private void Awake()
     {
-        targetManager = targetManagerObj.GetComponent<TargetManager>();
-        collider = this.GetComponent<Collider>();
+        batCollider = this.GetComponent<Collider>();
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        // 対象のGameObjectがターゲットオブジェクトか？
-        // 違和感
         Target collisionTarget = collision.gameObject.GetComponent<Target>();
+
+        // 衝突したのがアクティブになっているターゲットであれば
         if (activeTarget == collisionTarget)
         {
             // 打つ！
             HitTarget(collisionTarget);
         }
-    }
-
-    public void RegisterTarget(Target target)
-    {
-        activeTarget = target;
-    }
-
-    public void ColliderOn()
-    {
-        collider.enabled = true;
-    }
-
-    public void ColldierOff()
-    {
-        collider.enabled = false;
     }
 
     /// <summary>
@@ -96,6 +86,7 @@ public class BaseballBat : MonoBehaviour
         //ターゲットオブジェクトを飛ばす先を取得
         var targetPosition = SelectTargetPoint(target);
 
+        // ターゲットのステータスを変更
         target.Hit();
 
         //打撃音を鳴らす
@@ -158,5 +149,30 @@ public class BaseballBat : MonoBehaviour
     private bool IsRightHit(Target target)
     {
         return target.IsSmallPositionZ(borderRightDirection);
+    }
+
+    /// <summary>
+    /// アクティブになっているターゲットを保持
+    /// </summary>
+    /// <param name="target">ターゲット</param>
+    public void RegisterActiveTarget(Target target)
+    {
+        activeTarget = target;
+    }
+
+    /// <summary>
+    /// バットのコライダーをオンにする
+    /// </summary>
+    public void ColliderOn()
+    {
+        batCollider.enabled = true;
+    }
+
+    /// <summary>
+    /// バットのコライダーをオフにする
+    /// </summary>
+    public void ColldierOff()
+    {
+        batCollider.enabled = false;
     }
 }
