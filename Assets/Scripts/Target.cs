@@ -137,6 +137,7 @@ public class Target : MonoBehaviour
     public void Respawn(Vector3 targetPosition)
     {
         this.transform.position = targetPosition;
+        ResetVelocity();
     }
 
     /// <summary>
@@ -287,32 +288,13 @@ public class Target : MonoBehaviour
         {
             // 破壊演出用オブジェクトを生成
             var go = Instantiate(brokenObject, gameObject.transform.position, Quaternion.identity);
-            go.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
-// 子(以下)から探す必要がある
-//            var rb = go.GetComponent<Rigidbody>();
-//            rb.AddForce(new Vector3(0.0f, 5.0f, 20.0f), ForceMode.Impulse);
+            var script = go.GetComponent<BrokenObject>();
 
-            gameObject.SetActive(false);
+            // 破壊
+            script.Broken();
 
-            // 一定時間で消す
-            StartCoroutine(RemoveBrokenObject(go));
+            // 待機に戻す
+            Stay();
         }
-    }
-
-    /// <summary>
-    /// 一定時間後に破壊演出用オブジェクトを非表示にするコルーチン
-    /// </summary>
-    /// <returns>IEnumerator</returns>
-    public IEnumerator RemoveBrokenObject(GameObject go)
-    {
-        yield return new WaitForSeconds(1.0f);
-
-        // 破壊演出用オブジェクトを破棄
-        go.SetActive(false);
-        Destroy(go);
-
-        // ターゲットのステータスを変更
-        Stay();
-        ResetVelocity();
     }
 }
