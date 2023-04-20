@@ -19,11 +19,6 @@ public class StagingManager : MonoBehaviour
     [SerializeField] private CinemachineVirtualCamera[] followVCameras;
 
     /// <summary>
-    /// Button Swingのオブジェクト
-    /// </summary>
-    [SerializeField] private GameObject buttonSwing;
-
-    /// <summary>
     /// 打球を追う用カメラのシネマシーンカメラクラス
     /// </summary>
     private CinemachineVirtualCamera followVCamera;
@@ -37,12 +32,6 @@ public class StagingManager : MonoBehaviour
     /// 生成されたアクティブなエフェクト用オブジェクト
     /// </summary>
     private List<VisualEffect> activeEffects = new List<VisualEffect>();
-
-    private void Start()
-    {
-        // スイングボタンは非表示
-        buttonSwing.SetActive(false);
-    }
 
     /// <summary>
     /// VisualEffectを生成して表示する
@@ -63,7 +52,6 @@ public class StagingManager : MonoBehaviour
     public void SwitchFollowCamera(GameObject targetObject)
     {
         mainVCamera.gameObject.SetActive(false);
-        buttonSwing.SetActive(false);
 
         // 打球を追う用のカメラを取得
         followVCamera = SelectFollowVCamera();
@@ -101,9 +89,6 @@ public class StagingManager : MonoBehaviour
         }
 
         mainVCamera.gameObject.SetActive(true);
-
-        // スイングボタンを表示する
-        buttonSwing.SetActive(true);
     }
 
 
@@ -133,5 +118,4 @@ public class StagingManager : MonoBehaviour
         // ターゲットのステータスを変更
         target.Stay();
     }
-
 }
