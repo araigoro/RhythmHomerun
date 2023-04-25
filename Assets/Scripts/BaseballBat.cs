@@ -83,17 +83,26 @@ public class BaseballBat : MonoBehaviour
         //予期せぬ衝突を防ぐためにコライダーを無効にする
         ColldierOff();
 
-        //ターゲットオブジェクトを飛ばす先を取得
-        var targetPosition = SelectTargetPoint(target);
+        if (target.IsBreakable == false)
+        {
+            // 破壊できないターゲット
+            //ターゲットオブジェクトを飛ばす先を取得
+            var targetPosition = SelectTargetPoint(target);
 
-        // ターゲットのステータスを変更
-        target.Hit();
+            // ターゲットのステータスを変更
+            target.Hit();
 
-        //打撃音を鳴らす
-        AudioSource.PlayClipAtPoint(soundHit, transform.position);
+            //打撃音を鳴らす
+            AudioSource.PlayClipAtPoint(soundHit, transform.position);
 
-        //ターゲットオブジェクトを放物線状に飛ばす
-        target.MoveParabola(targetPosition,hitPower, hitAngle);
+            //ターゲットオブジェクトを放物線状に飛ばす
+            target.MoveParabola(targetPosition, hitPower, hitAngle);
+        }
+        else
+        {
+            // 破壊可能なターゲット
+            target.Broken();
+        }
     }
 
     /// <summary>

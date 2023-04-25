@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class Target : MonoBehaviour
@@ -21,6 +22,11 @@ public class Target : MonoBehaviour
     /// ターゲットのTrailRenderer
     /// </summary>
     private TrailRenderer trailRenderer;
+
+    /// <summary>
+    /// 破壊用のオブジェクト
+    /// </summary>
+    [SerializeField] private GameObject brokenObject;
 
     /// <summary>
     /// ターゲットのステータス
@@ -65,6 +71,17 @@ public class Target : MonoBehaviour
                     trailRenderer.enabled = true;
                 }
             }
+        }
+    }
+
+    /// <summary>
+    /// 破壊可能か？
+    /// </summary>
+    public bool IsBreakable
+    {
+        get
+        {
+            return (brokenObject == null) ? false : true;
         }
     }
 
@@ -120,6 +137,7 @@ public class Target : MonoBehaviour
     public void Respawn(Vector3 targetPosition)
     {
         this.transform.position = targetPosition;
+        ResetVelocity();
     }
 
     /// <summary>
@@ -259,5 +277,24 @@ public class Target : MonoBehaviour
     {
         targetRigitbody.velocity = Vector3.zero;
         targetRigitbody.angularVelocity = Vector3.zero;
+    }
+
+    /// <summary>
+    /// 破壊する
+    /// </summary>
+    public void Broken()
+    {
+        if (IsBreakable)
+        {
+            // 破壊演出用オブジェクトを生成
+            var go = Instantiate(brokenObject, gameObject.transform.position, Quaternion.identity);
+            var script = go.GetComponent<BrokenObject>();
+
+            // 破壊
+            script.Broken();
+
+            // 待機に戻す
+            Stay();
+        }
     }
 }
