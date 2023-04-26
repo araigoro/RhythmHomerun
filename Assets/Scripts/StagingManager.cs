@@ -117,5 +117,6 @@ public class StagingManager : MonoBehaviour
 
         // ターゲットのステータスを変更
         target.Stay();
+        target.ResetVelocity();
     }
 }
