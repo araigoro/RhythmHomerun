@@ -12,9 +12,19 @@ public class PitchingMachine : MonoBehaviour
     [SerializeField] private AudioClip soundShot;
 
     /// <summary>
+    /// バッターのオブジェクト
+    /// </summary>
+    [SerializeField] private GameObject batterObj;
+
+    /// <summary>
     /// ターゲットクラス
     /// </summary>
     private Target target;
+
+    /// <summary>
+    /// バッタークラス
+    /// </summary>
+    private Batter batter;
 
     /// <summary>
     /// 投げるオブジェクトの角度
@@ -44,6 +54,7 @@ public class PitchingMachine : MonoBehaviour
     private void Awake()
     {
         animator = gameObject.GetComponent<Animator>();
+        batter = batterObj.GetComponent<Batter>();
     }
 
     /// <summary>
@@ -85,5 +96,13 @@ public class PitchingMachine : MonoBehaviour
         // 投球開始
         // 投球モーションに切り替える
         animator.SetTrigger(animatorTriggerPitching);
+    }
+
+    /// <summary>
+    /// バッターの足上げ
+    /// </summary>
+    public void BatterLegUp()
+    {
+        batter.LegUp();
     }
 }
