@@ -102,6 +102,9 @@ public class BaseballBat : MonoBehaviour
         {
             // 破壊可能なターゲット
             target.Broken();
+
+            //打撃音を鳴らす
+            AudioSource.PlayClipAtPoint(soundHit, transform.position);
         }
     }
 
