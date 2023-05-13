@@ -116,6 +116,10 @@ public class Target : MonoBehaviour
     /// <param name="angle">角度</param>
     public void MoveParabola(Vector3 targetPosition,float speed,float angle)
     {
+        // 回転の影響を受けないようにリセット
+        ResetVelocity();
+
+        // 目標地点に飛ばすための加速度をセット
         var startPosition = this.gameObject.transform.position;
         var velocity = CalcVelocity(startPosition, targetPosition, angle)*speed;
         targetRigitbody.AddForce(velocity * targetRigitbody.mass, ForceMode.Impulse);
