@@ -163,27 +163,6 @@ public class Target : MonoBehaviour
     }
 
     /// <summary>
-    /// オブジェクトのZ値が、対象のZ値よりも大きいか？
-    /// </summary>
-    /// <param name="targetPositionZ">対象のZ値</param>
-    /// <returns>true: 大きい / false: 同じか小さい</returns>
-    public bool IsLargePositionZ(float targetPositionZ)
-    {
-        return this.gameObject.transform.position.z > targetPositionZ;
-    }
-
-    /// <summary>
-    /// オブジェクトのZ値が、対象のZ値よりも小さいか？
-    /// </summary>
-    /// <param name="targetPositionZ">対象のZ値</param>
-    /// <returns>true: 小さい / false: 同じか大きい</returns>
-    public bool IsSmallPositionZ(float targetPositionZ)
-    {
-        return this.gameObject.transform.position.z < targetPositionZ;
-    }
-
-
-    /// <summary>
     /// 打たれた状態に変更
     /// </summary>
     public void Hit()
