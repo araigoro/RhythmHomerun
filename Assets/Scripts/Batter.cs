@@ -1,7 +1,6 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Batter : MonoBehaviour
 {
@@ -49,6 +48,17 @@ public class Batter : MonoBehaviour
 
     private void Update()
     {
+    #if UNITY_EDITOR
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                return;
+            }
+    #else
+        if (EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId)) {
+            return;
+        }
+    #endif
+
         //‰æ–ÊƒNƒŠƒbƒN‚³‚ê‚½‚Æ‚«
         if (Input.GetMouseButtonDown(0))
         {
