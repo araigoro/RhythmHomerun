@@ -2218,7 +2218,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &580420326
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5257,7 +5257,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1853409854256424, guid: 6606d3dcc5264a44eb71cb2324879c2d, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1853409854256424, guid: 6606d3dcc5264a44eb71cb2324879c2d, type: 3}
       propertyPath: m_TagString
@@ -8232,7 +8232,7 @@ MonoBehaviour:
   - {fileID: 7241503185792172983, guid: 27fba5edec9d0f241aeca5219aa536fa, type: 3}
   - {fileID: 7241503185792172983, guid: 4e424c429009e0f43b72403b0403f316, type: 3}
   pitchingMachineObj: {fileID: 1013925462}
-  baseballBatObj: {fileID: 1480589842}
+  batterObj: {fileID: 1212433345}
   stagingManagerObj: {fileID: 1093007916}
 --- !u!1 &1828370238
 GameObject:
@@ -9082,6 +9082,7 @@ MonoBehaviour:
   targetManagerObj: {fileID: 1819392452}
   logoImage: {fileID: 758252923}
   tapStartText: {fileID: 1223745100}
+  switchBatPanel: {fileID: 580420325}
 --- !u!1 &2063004776 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -7072752041882323593, guid: b01a9d8c8586a9d488a20cb0a75f39b1,

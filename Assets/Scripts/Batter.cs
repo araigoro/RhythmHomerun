@@ -10,6 +10,11 @@ public class Batter : MonoBehaviour
     [SerializeField] private GameObject[] baseballBatObj;
 
     /// <summary>
+    /// 現在アクティブになっているターゲット
+    /// </summary>
+    private Target activeTarget;
+
+    /// <summary>
     /// バットのクラス
     /// </summary>
     private BaseballBat baseballBat;
@@ -42,12 +47,12 @@ public class Batter : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        LoadBaseballBat();
         animator = GetComponent<Animator>();
     }
 
     private void Update()
     {
+        //UIボタンが押された際は画面クリックが反応しないようにする
     #if UNITY_EDITOR
             if (EventSystem.current.IsPointerOverGameObject())
             {
@@ -82,6 +87,7 @@ public class Batter : MonoBehaviour
         var bat = baseballBatObj[batIndex];
         bat.SetActive(true);
         baseballBat = bat.GetComponent<BaseballBat>();
+        baseballBat.RegisterActiveTarget(activeTarget);
     }
 
     /// <summary>
@@ -133,5 +139,15 @@ public class Batter : MonoBehaviour
     public String usingBatTag()
     {
         return baseballBatObj[batIndex].tag;
+    }
+
+    /// <summary>
+    /// アクティブになっているターゲットを認識する
+    /// </summary>
+    /// <param name="target">ターゲット</param>
+    public void RecognizeActiveTarget(Target target)
+    {
+        activeTarget = target;
+        LoadBaseballBat();
     }
 }

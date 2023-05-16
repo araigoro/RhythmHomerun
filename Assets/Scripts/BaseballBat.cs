@@ -166,6 +166,11 @@ public class BaseballBat : MonoBehaviour
     /// <param name="target">ターゲット</param>
     public void RegisterActiveTarget(Target target)
     {
+        if(target == null)
+        {
+            return;
+        }
+
         activeTarget = target;
     }
 
