@@ -48,6 +48,11 @@ public class BaseballBat : MonoBehaviour
     private const float borderRightDirection = 0.0f;
 
     /// <summary>
+    /// 打撃音の大きさ
+    /// </summary>
+    private const float hitTargetVolume = 0.3f;
+
+    /// <summary>
     /// 現在アクティブになっているターゲット
     /// </summary>
     private Target activeTarget;
@@ -58,14 +63,9 @@ public class BaseballBat : MonoBehaviour
     private Collider batCollider;
 
     /// <summary>
-    /// サブクラスでのオーバライド用
-    /// それぞれのバットがターゲットを破壊できるかどうか
+    /// 打撃音再生用
     /// </summary>
-    /// <returns></returns>
-    protected virtual bool IsBreakableTarget()
-    {
-        return false;
-    }
+    private AudioSource audioSource;
 
     /// <summary>
     /// サブクラスでのオーバライド用
@@ -77,9 +77,23 @@ public class BaseballBat : MonoBehaviour
         return null;
     }
 
+    /// <summary>
+    /// サブクラスでのオーバライド用
+    /// それぞれのバットがターゲットを破壊できるかどうか
+    /// </summary>
+    /// <returns></returns>
+    protected virtual bool IsBreakableTarget()
+    {
+        return false;
+    }
+
     private void Awake()
     {
         batCollider = this.GetComponent<Collider>();
+        audioSource = this.GetComponent<AudioSource>();
+
+        //ボリューム設定
+        audioSource.volume = hitTargetVolume;
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -104,6 +118,10 @@ public class BaseballBat : MonoBehaviour
         //予期せぬ衝突を防ぐためにコライダーを無効にする
         ColldierOff();
 
+        //打撃音を鳴らす
+        audioSource.PlayOneShot(soundHit);
+
+        //ターゲットを破壊できるとき
         if (isBreakableTarget == true)
         {
             // ターゲットを破壊する
@@ -116,9 +134,6 @@ public class BaseballBat : MonoBehaviour
 
         // ターゲットのステータスを変更
         target.Hit();
-
-        //打撃音を鳴らす
-        AudioSource.PlayClipAtPoint(soundHit, transform.position);
 
         //ターゲットオブジェクトを放物線状に飛ばす
         target.MoveParabola(targetPosition, hitPower, hitAngle);
