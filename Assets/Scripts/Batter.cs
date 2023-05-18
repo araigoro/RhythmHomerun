@@ -54,6 +54,8 @@ public class Batter : MonoBehaviour
 
                 //足も下げる
                 LegDown();
+
+                // FIXME: 振り遅れの場合に、次の投球時にスイングアニメーションが再生されてしまう
             }
         }
     }

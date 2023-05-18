@@ -116,6 +116,10 @@ public class Target : MonoBehaviour
     /// <param name="angle">角度</param>
     public void MoveParabola(Vector3 targetPosition,float speed,float angle)
     {
+        // 回転の影響を受けないようにリセット
+        ResetVelocity();
+
+        // 目標地点に飛ばすための加速度をセット
         var startPosition = this.gameObject.transform.position;
         var velocity = CalcVelocity(startPosition, targetPosition, angle)*speed;
         targetRigitbody.AddForce(velocity * targetRigitbody.mass, ForceMode.Impulse);
@@ -161,27 +165,6 @@ public class Target : MonoBehaviour
 
         return (new Vector3(endPosition.x - startPosition.x, diffX * Mathf.Tan(rad), endPosition.z - startPosition.z).normalized * initVelocity);
     }
-
-    /// <summary>
-    /// オブジェクトのZ値が、対象のZ値よりも大きいか？
-    /// </summary>
-    /// <param name="targetPositionZ">対象のZ値</param>
-    /// <returns>true: 大きい / false: 同じか小さい</returns>
-    public bool IsLargePositionZ(float targetPositionZ)
-    {
-        return this.gameObject.transform.position.z > targetPositionZ;
-    }
-
-    /// <summary>
-    /// オブジェクトのZ値が、対象のZ値よりも小さいか？
-    /// </summary>
-    /// <param name="targetPositionZ">対象のZ値</param>
-    /// <returns>true: 小さい / false: 同じか大きい</returns>
-    public bool IsSmallPositionZ(float targetPositionZ)
-    {
-        return this.gameObject.transform.position.z < targetPositionZ;
-    }
-
 
     /// <summary>
     /// 打たれた状態に変更
