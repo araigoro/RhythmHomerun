@@ -756,7 +756,7 @@ PrefabInstance:
     - target: {fileID: 3779004119984057535, guid: f7f6fd515c3da674ba93e5f46852e622,
         type: 3}
       propertyPath: m_TagString
-      value: metalBat
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 4556068963185030661, guid: f7f6fd515c3da674ba93e5f46852e622,
         type: 3}
@@ -3321,20 +3321,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 188223184}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &812407021
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 812407019}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e39ac1eabed5a74bac7f5ae8013ec25, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  soundHit: {fileID: 8300000, guid: 4a65958cf4bef1744aa99b1f7df0b8b9, type: 3}
-  targetManagerObj: {fileID: 1819392452}
 --- !u!65 &812407022
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3348,6 +3334,20 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.5, y: 1, z: 0.2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &812407026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 812407019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e105bdcf88de63049a40b2d1a430ba7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundHit: {fileID: 8300000, guid: 4a65958cf4bef1744aa99b1f7df0b8b9, type: 3}
+  targetManagerObj: {fileID: 1819392452}
 --- !u!1 &817494693 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2920776194202978659, guid: d48be18c9ec670b4b959a3b023fb963a,
@@ -5261,7 +5261,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1853409854256424, guid: 6606d3dcc5264a44eb71cb2324879c2d, type: 3}
       propertyPath: m_TagString
-      value: woodBat
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 4729984088506558, guid: 6606d3dcc5264a44eb71cb2324879c2d, type: 3}
       propertyPath: m_RootOrder
@@ -7240,7 +7240,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.5, y: 1, z: 0.2}
   m_Center: {x: 0, y: 0.4, z: 0}
---- !u!114 &1480589851
+--- !u!114 &1480589854
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -7249,7 +7249,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1480589842}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e39ac1eabed5a74bac7f5ae8013ec25, type: 3}
+  m_Script: {fileID: 11500000, guid: d6f787fab49189a469283e922e807305, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   soundHit: {fileID: 8300000, guid: 4a65958cf4bef1744aa99b1f7df0b8b9, type: 3}
@@ -8227,10 +8227,7 @@ MonoBehaviour:
   targetPrefabs:
   - {fileID: 5198035327543024215, guid: b353e4f11399cba4ebaa4991f81bf808, type: 3}
   - {fileID: 7677874803949524309, guid: ff231b207a5aedf4bb83957263af79ec, type: 3}
-  - {fileID: 6003936292375450369, guid: ad8105dc5ac4cdd40ab7261f0f8a9953, type: 3}
-  - {fileID: 7241503185792172983, guid: 352ea163558e9da4c81c2fa72ebc599f, type: 3}
   - {fileID: 7241503185792172983, guid: 27fba5edec9d0f241aeca5219aa536fa, type: 3}
-  - {fileID: 7241503185792172983, guid: 4e424c429009e0f43b72403b0403f316, type: 3}
   pitchingMachineObj: {fileID: 1013925462}
   batterObj: {fileID: 1212433345}
   stagingManagerObj: {fileID: 1093007916}

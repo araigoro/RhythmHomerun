@@ -136,9 +136,10 @@ public class Batter : MonoBehaviour
     /// 現在使用しているバットのタグ名を返す
     /// </summary>
     /// <returns></returns>
-    public String usingBatTag()
+    public String ReturnUsingBatType()
     {
-        return baseballBatObj[batIndex].tag;
+        return baseballBat.ReturnBatType() ;
+
     }
 
     /// <summary>

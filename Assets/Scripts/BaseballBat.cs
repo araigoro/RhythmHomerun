@@ -57,6 +57,26 @@ public class BaseballBat : MonoBehaviour
     /// </summary>
     private Collider batCollider;
 
+    /// <summary>
+    /// サブクラスでのオーバライド用
+    /// それぞれのバットがターゲットを破壊できるかどうか
+    /// </summary>
+    /// <returns></returns>
+    protected virtual bool IsBreakableTarget()
+    {
+        return false;
+    }
+
+    /// <summary>
+    /// サブクラスでのオーバライド用
+    /// バットの種類
+    /// </summary>
+    /// <returns></returns>
+    protected virtual string BatType()
+    {
+        return null;
+    }
+
     private void Awake()
     {
         batCollider = this.GetComponent<Collider>();
@@ -70,39 +90,38 @@ public class BaseballBat : MonoBehaviour
         if (activeTarget == collisionTarget)
         {
             // 打つ！
-            HitTarget(collisionTarget);
+            HitTarget(collisionTarget, IsBreakableTarget());
         }
     }
 
     /// <summary>
-    /// ターゲットオブジェクトを打つ
+    /// ターゲットを打つ
     /// </summary>
-    /// <param name="target">対象のターゲットオブジェクト</param>
-    private void HitTarget(Target target)
+    /// <param name="target"> 打つ対象のターゲット</param>
+    /// <param name="isBreakableTarget"> バットがターゲットを破壊できるかどうか</param>
+    private void HitTarget(Target target,bool isBreakableTarget)
     {
         //予期せぬ衝突を防ぐためにコライダーを無効にする
         ColldierOff();
 
-        if (target.IsBreakable == false)
+        if (isBreakableTarget == true)
         {
-            // 破壊できないターゲット
-            //ターゲットオブジェクトを飛ばす先を取得
-            var targetPosition = SelectTargetPoint(target);
-
-            // ターゲットのステータスを変更
-            target.Hit();
-
-            //打撃音を鳴らす
-            AudioSource.PlayClipAtPoint(soundHit, transform.position);
-
-            //ターゲットオブジェクトを放物線状に飛ばす
-            target.MoveParabola(targetPosition, hitPower, hitAngle);
-        }
-        else
-        {
-            // 破壊可能なターゲット
+            // ターゲットを破壊する
             target.Broken();
+            return;
         }
+
+        //ターゲットオブジェクトを飛ばす先を取得
+        var targetPosition = SelectTargetPoint(target);
+
+        // ターゲットのステータスを変更
+        target.Hit();
+
+        //打撃音を鳴らす
+        AudioSource.PlayClipAtPoint(soundHit, transform.position);
+
+        //ターゲットオブジェクトを放物線状に飛ばす
+        target.MoveParabola(targetPosition, hitPower, hitAngle);
     }
 
     /// <summary>
@@ -188,5 +207,14 @@ public class BaseballBat : MonoBehaviour
     public void ColldierOff()
     {
         batCollider.enabled = false;
+    }
+
+    /// <summary>
+    /// バットの種類を返す
+    /// </summary>
+    /// <returns></returns>
+    public string ReturnBatType()
+    {
+        return BatType();
     }
 }

@@ -21,23 +21,14 @@ public class SwitchBatPanel : MonoBehaviour
     private Batter batter;
 
     /// <summary>
-    /// バットの種類一覧
-    /// </summary>
-    private Dictionary<string, string> batType = new Dictionary<string, string>()
-    {
-        {"woodBat","木製" },
-        {"metalBat","金属" }
-    };
-
-    /// <summary>
     /// バットの種類を表示するテキスト
     /// </summary>
     private TextMeshProUGUI batTypeText;
 
     /// <summary>
-    /// 現在使用しているバットのタグ
+    /// 現在使用しているバットの種類
     /// </summary>
-    private string usingBatTag;
+    private string usingBatType;
 
     // Start is called before the first frame update
     void Start()
@@ -63,7 +54,7 @@ public class SwitchBatPanel : MonoBehaviour
     /// </summary>
     private void ShowUsingBatName()
     {
-        batTypeText.text = batType[usingBatTag];
+        batTypeText.text = usingBatType;
     }
 
     /// <summary>
@@ -71,6 +62,6 @@ public class SwitchBatPanel : MonoBehaviour
     /// </summary>
     private void LoadUsingBatTag()
     {
-        usingBatTag = batter.usingBatTag();
+        usingBatType = batter.ReturnUsingBatType();
     }
 }
