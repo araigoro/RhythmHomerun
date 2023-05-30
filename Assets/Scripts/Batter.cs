@@ -121,6 +121,9 @@ public class Batter : MonoBehaviour
     /// </summary>
     public void LegUp()
     {
+        //スイングトリガーが残っている可能性があるため、スイングトリガーをリセットする
+        animator.ResetTrigger(triggerSwing);
+
         animator.SetBool(boolLegUp, true);
     }
 
