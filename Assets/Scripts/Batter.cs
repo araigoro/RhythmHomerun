@@ -1,18 +1,28 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Batter : MonoBehaviour
 {
     /// <summary>
     /// バットのオブジェクト
     /// </summary>
-    [SerializeField] GameObject baseballBatObj;
+    [SerializeField] private GameObject[] baseballBatObj;
+
+    /// <summary>
+    /// 現在アクティブになっているターゲット
+    /// </summary>
+    private Target activeTarget;
 
     /// <summary>
     /// バットのクラス
     /// </summary>
     private BaseballBat baseballBat;
+
+    /// <summary>
+    ///バットを選ぶ時の引数
+    /// </summary>
+    private int batIndex = 0;
 
     /// <summary>
     /// バッターのアニメーター
@@ -35,14 +45,25 @@ public class Batter : MonoBehaviour
     private const string legUpMotion = "LegUpMotion_10";
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        baseballBat = baseballBatObj.GetComponent<BaseballBat>();
         animator = GetComponent<Animator>();
     }
 
     private void Update()
     {
+        //UIボタンが押された際は画面クリックが反応しないようにする
+    #if UNITY_EDITOR
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                return;
+            }
+    #else
+        if (EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId)) {
+            return;
+        }
+    #endif
+
         //画面クリックされたとき
         if (Input.GetMouseButtonDown(0))
         {
@@ -54,10 +75,29 @@ public class Batter : MonoBehaviour
 
                 //足も下げる
                 LegDown();
-
-                // FIXME: 振り遅れの場合に、次の投球時にスイングアニメーションが再生されてしまう
             }
         }
+    }
+
+    /// <summary>
+    /// バットを読み込む
+    /// </summary>
+    private void LoadBaseballBat()
+    {
+        var bat = baseballBatObj[batIndex];
+        bat.SetActive(true);
+        baseballBat = bat.GetComponent<BaseballBat>();
+        baseballBat.RegisterActiveTarget(activeTarget);
+    }
+
+    /// <summary>
+    /// バットを切り替える
+    /// </summary>
+    public void SwitchBat()
+    {
+        baseballBatObj[batIndex].SetActive(false);
+        batIndex = (batIndex + 1) % baseballBatObj.Length;
+        LoadBaseballBat();
     }
 
     /// <summary>
@@ -90,5 +130,25 @@ public class Batter : MonoBehaviour
     public void LegDown()
     {
         animator.SetBool(boolLegUp, false);
+    }
+
+    /// <summary>
+    /// 現在使用しているバットのタグ名を返す
+    /// </summary>
+    /// <returns></returns>
+    public String ReturnUsingBatType()
+    {
+        return baseballBat.ReturnBatType() ;
+
+    }
+
+    /// <summary>
+    /// アクティブになっているターゲットを認識する
+    /// </summary>
+    /// <param name="target">ターゲット</param>
+    public void RecognizeActiveTarget(Target target)
+    {
+        activeTarget = target;
+        LoadBaseballBat();
     }
 }

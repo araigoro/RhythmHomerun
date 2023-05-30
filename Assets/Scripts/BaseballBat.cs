@@ -23,6 +23,21 @@ public class BaseballBat : MonoBehaviour
     private const float hitPower = 1.0f;
 
     /// <summary>
+    ///　打ったオブジェクトをレフトに飛ばすかどうかの基準値
+    /// </summary>
+    private const float borderLeftDirection = 0.2f;
+
+    /// <summary>
+    /// 打ったオブジェクトをライトに飛ばすかどうかの基準値
+    /// </summary>
+    private const float borderRightDirection = 0.0f;
+
+    /// <summary>
+    /// 打撃音の大きさ
+    /// </summary>
+    private const float hitTargetVolume = 0.3f;
+
+    /// <summary>
     /// 現在アクティブになっているターゲット
     /// </summary>
     private Target activeTarget;
@@ -47,9 +62,37 @@ public class BaseballBat : MonoBehaviour
     /// </summary>
     private const float maxDiffZ = 0.6f;
 
+    /// 打撃音再生用
+    /// </summary>
+    private AudioSource audioSource;
+
+    /// <summary>
+    /// サブクラスでのオーバライド用
+    /// バットの種類
+    /// </summary>
+    /// <returns></returns>
+    protected virtual string BatType()
+    {
+        return null;
+    }
+
+    /// <summary>
+    /// サブクラスでのオーバライド用
+    /// それぞれのバットがターゲットを破壊できるかどうか
+    /// </summary>
+    /// <returns></returns>
+    protected virtual bool IsBreakableTarget()
+    {
+        return false;
+    }
+
     private void Awake()
     {
         batCollider = this.GetComponent<Collider>();
+        audioSource = this.GetComponent<AudioSource>();
+
+        //ボリューム設定
+        audioSource.volume = hitTargetVolume;
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -60,42 +103,42 @@ public class BaseballBat : MonoBehaviour
         if (activeTarget == collisionTarget)
         {
             // 打つ！
-            HitTarget(collisionTarget);
+            HitTarget(collisionTarget, IsBreakableTarget());
         }
     }
 
     /// <summary>
-    /// ターゲットオブジェクトを打つ
+    /// ターゲットを打つ
     /// </summary>
-    /// <param name="target">対象のターゲットオブジェクト</param>
-    private void HitTarget(Target target)
+    /// <param name="target"> 打つ対象のターゲット</param>
+    /// <param name="isBreakableTarget"> バットがターゲットを破壊できるかどうか</param>
+    private void HitTarget(Target target,bool isBreakableTarget)
     {
         //予期せぬ衝突を防ぐためにコライダーを無効にする
         ColldierOff();
 
-        if (target.IsBreakable == false)
+        //打撃音を鳴らす
+        audioSource.PlayOneShot(soundHit);
+
+        //ターゲットを破壊できるとき
+        if (isBreakableTarget == true)
         {
-            // 破壊できないターゲット
-            //ターゲットオブジェクトを飛ばす先を取得
-            var targetPosition = SelectTargetPoint(target);
-
-            // ターゲットのステータスを変更
-            target.Hit();
-
-            //打撃音を鳴らす
-            AudioSource.PlayClipAtPoint(soundHit, transform.position);
-
-            //ターゲットオブジェクトを放物線状に飛ばす
-            target.MoveParabola(targetPosition, hitPower, hitAngle);
-        }
-        else
-        {
-            // 破壊可能なターゲット
+            // ターゲットを破壊する
             target.Broken();
-
-            //打撃音を鳴らす
-            AudioSource.PlayClipAtPoint(soundHit, transform.position);
+            return;
         }
+
+        //ターゲットオブジェクトを飛ばす先を取得
+        var targetPosition = SelectTargetPoint(target);
+
+        // ターゲットのステータスを変更
+        target.Hit();
+
+        //ターゲットオブジェクトを放物線状に飛ばす
+        target.MoveParabola(targetPosition, hitPower, hitAngle);
+
+        //打撃音を鳴らす
+        AudioSource.PlayClipAtPoint(soundHit, transform.position);
     }
 
     /// <summary>
@@ -133,6 +176,11 @@ public class BaseballBat : MonoBehaviour
     /// <param name="target">ターゲット</param>
     public void RegisterActiveTarget(Target target)
     {
+        if(target == null)
+        {
+            return;
+        }
+
         activeTarget = target;
     }
 
@@ -150,5 +198,14 @@ public class BaseballBat : MonoBehaviour
     public void ColldierOff()
     {
         batCollider.enabled = false;
+    }
+
+    /// <summary>
+    /// バットの種類を返す
+    /// </summary>
+    /// <returns></returns>
+    public string ReturnBatType()
+    {
+        return BatType();
     }
 }

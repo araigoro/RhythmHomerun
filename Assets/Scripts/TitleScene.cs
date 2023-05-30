@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -20,6 +19,11 @@ public class TitleScene : MonoBehaviour
     /// 開始テキスト
     /// </summary>
     [SerializeField] private TextMeshProUGUI tapStartText;
+
+    /// <summary>
+    /// バットを切り替えるUIパネル
+    /// </summary>
+    [SerializeField] private GameObject switchBatPanel;
 
     /// <summary>
     /// 開始テキストが点滅する周期を設定
@@ -102,6 +106,9 @@ public class TitleScene : MonoBehaviour
 
         // ゲームを開始する
         targetManager.Playball();
+
+        //バット切り替えUIを表示
+        switchBatPanel.SetActive(true);
     }
 
     /// <summary>

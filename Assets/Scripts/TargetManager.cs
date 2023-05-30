@@ -14,9 +14,9 @@ public class TargetManager : MonoBehaviour
     [SerializeField] private GameObject pitchingMachineObj;
 
     /// <summary>
-    /// バットのオブジェクト
+    /// バッターのオブジェクト
     /// </summary>
-    [SerializeField] private GameObject baseballBatObj;
+    [SerializeField] private GameObject batterObj;
 
     /// <summary>
     /// ステージングマネージャーのオブジェクト
@@ -46,7 +46,7 @@ public class TargetManager : MonoBehaviour
     /// <summary>
     /// バットのクラス
     /// </summary>
-    private BaseballBat baseballBat;
+    private Batter batter;
 
     /// <summary>
     /// ステージングマネージャーのクラス
@@ -56,7 +56,7 @@ public class TargetManager : MonoBehaviour
     private void Awake()
     {
         pitchingMachine = pitchingMachineObj.GetComponent<PitchingMachine>();
-        baseballBat = baseballBatObj.GetComponent<BaseballBat>();
+        batter = batterObj.GetComponent<Batter>();
         stagingManager = stagingManagerObj.GetComponent<StagingManager>();
 
         // すべてのターゲットプレハブを生成して、ターゲットプールに追加する
@@ -89,8 +89,8 @@ public class TargetManager : MonoBehaviour
         // 選ばれたターゲットを投手に渡す
         pitchingMachine.Add(activeTarget);
 
-        // 選ばれたターゲットをバットに認識させる
-        baseballBat.RegisterActiveTarget(activeTarget);
+        // 選ばれたターゲットをバッターに認識させる
+        batter.RecognizeActiveTarget(activeTarget);
     }
 
     private void Update()
