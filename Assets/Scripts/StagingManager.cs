@@ -39,10 +39,34 @@ public class StagingManager : MonoBehaviour
     /// <param name="position">生成する座標</param>
     public void CreateVisualEffect(Vector3 position)
     {
-        var prefab = visualEffects[UnityEngine.Random.Range(0, visualEffects.Length)];
-        var visualEffect = Instantiate(prefab, position, Quaternion.identity);
-        visualEffect.SendEvent("StartPlay");
-        activeEffects.Add(visualEffect);
+        // 近いものを探す
+        if (FindVisualEffect(position, 1.0f) == null) {
+            // 近いものが無ければ、新たに生成する
+            var prefab = visualEffects[UnityEngine.Random.Range(0, visualEffects.Length)];
+            var visualEffect = Instantiate(prefab, position, Quaternion.identity);
+            visualEffect.SendEvent("StartPlay");
+            activeEffects.Add(visualEffect);
+        }
+    }
+    
+    /// <summary>
+    /// 指定された位置に近い花火演出を探す
+    /// </summary>
+    /// <param name="position">位置</param>
+    /// <param name="distance">近いと判断する距離</param>
+    /// <returns>花火演出(近いもの場無い場合は null)</returns>
+    private VisualEffect FindVisualEffect(Vector3 position, float distance)
+    {
+        foreach (var visualEffect in activeEffects)
+        {
+            var lx = Math.Abs(visualEffect.transform.position.x - position.x);
+            if (lx <= distance)
+            {
+                return visualEffect;
+            }
+        }
+
+        return null;
     }
 
     /// <summary>

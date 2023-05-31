@@ -13,21 +13,6 @@ public class BaseballBat : MonoBehaviour
     [SerializeField] GameObject targetManagerObj;
 
     /// <summary>
-    /// 打ったオブジェクトを飛ばす目標地点（レフト方向）
-    /// </summary>
-    private readonly Vector3[] homerunPointLeft = { new Vector3(-27, 0, 35), new Vector3(-25, 0, 35), new Vector3(-20, 0, 35) };
-
-    /// <summary>
-    /// 打ったオブジェクトを飛ばす目標地点（センター方向）
-    /// </summary>
-    private readonly Vector3[] homerunPointCenter = { new Vector3(0, 0, 35), new Vector3(-10, 0, 35), new Vector3(7, 0, 35) };
-
-    /// <summary>
-    /// 打ったオブジェクトを飛ばす目標地点（ライト方向）
-    /// </summary>
-    private readonly Vector3[] homerunPointRight = { new Vector3(31, 0, 35), new Vector3(13, 0, 35), new Vector3(23, 0, 35) };
-
-    /// <summary>
     /// オブジェクトの打ち出し角度
     /// </summary>
     private const float hitAngle = 30;
@@ -38,21 +23,6 @@ public class BaseballBat : MonoBehaviour
     private const float hitPower = 1.0f;
 
     /// <summary>
-    ///　打ったオブジェクトをレフトに飛ばすかどうかの基準値
-    /// </summary>
-    private const float borderLeftDirection = 0.2f;
-
-    /// <summary>
-    /// 打ったオブジェクトをライトに飛ばすかどうかの基準値
-    /// </summary>
-    private const float borderRightDirection = 0.0f;
-
-    /// <summary>
-    /// 打撃音の大きさ
-    /// </summary>
-    private const float hitTargetVolume = 0.3f;
-
-    /// <summary>
     /// 現在アクティブになっているターゲット
     /// </summary>
     private Target activeTarget;
@@ -61,6 +31,26 @@ public class BaseballBat : MonoBehaviour
     /// バットのコライダー
     /// </summary>
     private Collider batCollider;
+
+    /// <summary>
+    /// 打撃音の大きさ
+    /// </summary>
+    private const float hitTargetVolume = 0.3f;
+
+    /// <summary>
+    /// 飛距離
+    /// </summary>
+    private const float maxDistance = 35f;
+
+    /// <summary>
+    /// ターゲットとのZ距離の最大値
+    /// </summary>
+    private const float maxDiffZ = 0.6f;
+
+    /// <summary>
+    /// ターゲットとのZ距離の最小値
+    /// </summary>
+    private const float minDiffZ = 0.25f;
 
     /// <summary>
     /// 打撃音再生用
@@ -146,52 +136,26 @@ public class BaseballBat : MonoBehaviour
     /// <returns>飛ばす先の座標（x,y,z）</returns>
     private Vector3 SelectTargetPoint(Target target)
     {
-        //レフト方向に飛ばすか？
-        if (IsLeftHit(target))
-        {
-            //レフト方向に設定した座標の中からランダムに選ぶ
-            return SelectRandomPoint(homerunPointLeft);
-        }
+        // ターゲットオブジェクトの現在位置
+        var currentPosition = target.gameObject.transform.position;
 
-        //ライト方向に飛ばすか？
-        if (IsRightHit(target))
-        {
-            //ライト方向に設定した座標の中からランダムに選ぶ
-            return SelectRandomPoint(homerunPointRight);
-        }
+        // ターゲットのZ座標を取得
+        var diffZ = target.gameObject.transform.position.z;
+        // min-max内に補正
+        diffZ = Mathf.Min(Mathf.Max(minDiffZ, diffZ), maxDiffZ);
 
-        //センター方向に設定した座標の中からランダムに選ぶ
-        return SelectRandomPoint(homerunPointCenter);
-    }
+        // 距離から角度を求める
+        var angle = (((diffZ - minDiffZ) / (maxDiffZ - minDiffZ) * -80f) + 40f);
 
-    /// <summary>
-    /// 座標配列の中からランダムに１つ選ぶ
-    /// </summary>
-    /// <param name="homerunPoint">対象の座標配列</param>
-    /// <returns>飛ばす先の座標（x,y,z）</returns>
-    private Vector3 SelectRandomPoint(Vector3[] homerunPoint)
-    {
-        return homerunPoint[UnityEngine.Random.Range(0, homerunPoint.Length)];
-    }
+        // 角度をラジアンに変換
+        float radian = angle * Mathf.Deg2Rad;
 
-    /// <summary>
-    /// 打ったターゲットオブジェクトをレフト方向に飛ばすか？
-    /// </summary>
-    /// <param name="target">対象のターゲットオブジェクト</param>
-    /// <returns>true:飛ばす / false:飛ばさない</returns>
-    private bool IsLeftHit(Target target)
-    {
-        return target.IsLargePositionZ(borderLeftDirection);
-    }
+        // 新しい座標の計算
+        float offsetX = Mathf.Sin(radian) * maxDistance;
+        float offsetZ = Mathf.Cos(radian) * maxDistance;
 
-    /// <summary>
-    /// 打ったターゲットオブジェクトをライト方向に飛ばすか？
-    /// </summary>
-    /// <param name="target">対象のターゲットオブジェクト</param>
-    /// <returns>true:飛ばす / false:飛ばさない</returns>
-    private bool IsRightHit(Target target)
-    {
-        return target.IsSmallPositionZ(borderRightDirection);
+        // ボールの着弾座標を返す
+        return currentPosition + new Vector3(offsetX, 0f, offsetZ);
     }
 
     /// <summary>
