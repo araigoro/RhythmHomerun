@@ -75,8 +75,6 @@ public class Batter : MonoBehaviour
 
                 //足も下げる
                 LegDown();
-
-                // FIXME: 振り遅れの場合に、次の投球時にスイングアニメーションが再生されてしまう
             }
         }
     }
@@ -123,6 +121,9 @@ public class Batter : MonoBehaviour
     /// </summary>
     public void LegUp()
     {
+        //スイングトリガーが残っている可能性があるため、スイングトリガーをリセットする
+        animator.ResetTrigger(triggerSwing);
+
         animator.SetBool(boolLegUp, true);
     }
 

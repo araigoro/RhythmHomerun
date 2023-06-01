@@ -115,20 +115,20 @@ public class TargetManager : MonoBehaviour
             // 打球を追うカメラに切り替える
             stagingManager.SwitchFollowCamera(activeTarget.GetObj());
         }
-
-        // ターゲットがスタンドインした時
-        if (activeTarget.IsStandIn())
+        else if (activeTarget.IsStandIn())
         {
+            // ターゲットがスタンドインした時
+
             // ホームラン演出を生成
             stagingManager.GenerateHomerunEffect(activeTarget);
 
             // ターゲットの速度を0にする
             activeTarget.ResetVelocity();
         }
-
-        // ターゲットが待機ステータスになった時
-        if (activeTarget.IsStay())
+        else if (activeTarget.IsStay())
         {
+            // ターゲットが待機ステータスになった時
+
             // メインカメラに切り替える
             stagingManager.SwitchMainCamera();
 
@@ -138,6 +138,16 @@ public class TargetManager : MonoBehaviour
 
             // 新しいターゲットを選ぶ
             SelectRandomActiveTarget();
+        }
+        else if (activeTarget.IsOverlooking())
+        {
+            // ターゲットが見逃しステータスになった時
+
+            // 花火をすべてクリア
+            stagingManager.ResetVisualEffects();
+
+            // 待機に移行
+            activeTarget.Stay();
         }
     }
 

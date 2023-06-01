@@ -34,6 +34,7 @@ public class Target : MonoBehaviour
     {
         Stay,           //非アクティブで隠れている
         WaitingShot,    //投手が保持していて、投げる前
+        Overlooking,    //見逃し
         Hit,            //バットに打たれた瞬間
         Fly,            //打たれて飛んでいる
         StandIn         //スタンドイン
@@ -96,15 +97,13 @@ public class Target : MonoBehaviour
         // 地面と衝突したら
         if (collision.gameObject.tag == ground)
         {
-            Stay();
-            ResetVelocity();
+            Overlooking();
         }
 
         // スタンドと衝突したら
         if (collision.gameObject.tag == stand)
         {
             Homerun();
-            ResetVelocity();
         }
     }
 
@@ -193,6 +192,15 @@ public class Target : MonoBehaviour
     }
 
     /// <summary>
+    /// 見逃されたかどうか
+    /// </summary>
+    /// <returns></returns>
+    public bool IsOverlooking()
+    {
+        return NowStatus == State.Overlooking;
+    }
+
+    /// <summary>
     /// ターゲットのオブジェクトを返す
     /// </summary>
     /// <returns></returns>
@@ -228,11 +236,21 @@ public class Target : MonoBehaviour
     }
 
     /// <summary>
+    /// 状態を見逃しに変更
+    /// </summary>
+    public void Overlooking()
+    {
+        NowStatus = State.Overlooking;
+        ResetVelocity();
+    }
+
+    /// <summary>
     /// 状態をホームランに変更
     /// </summary>
     public void Homerun()
     {
         NowStatus = State.StandIn;
+        ResetVelocity();
     }
 
     /// <summary>

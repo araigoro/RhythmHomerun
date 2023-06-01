@@ -45,12 +45,12 @@ public class BaseballBat : MonoBehaviour
     /// <summary>
     /// ターゲットとのZ距離の最大値
     /// </summary>
-    private const float maxDiffZ = 0.6f;
+    private const float maxDiffZ = 0.55f;
 
     /// <summary>
     /// ターゲットとのZ距離の最小値
     /// </summary>
-    private const float minDiffZ = 0.25f;
+    private const float minDiffZ = 0.20f;
 
     /// <summary>
     /// 打撃音再生用
@@ -140,7 +140,9 @@ public class BaseballBat : MonoBehaviour
         var currentPosition = target.gameObject.transform.position;
 
         // ターゲットのZ座標を取得
-        var diffZ = target.gameObject.transform.position.z;
+        var diffZ = currentPosition.z;
+        //Debug.Log(diffZ);
+        
         // min-max内に補正
         diffZ = Mathf.Min(Mathf.Max(minDiffZ, diffZ), maxDiffZ);
 

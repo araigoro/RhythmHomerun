@@ -70,6 +70,18 @@ public class StagingManager : MonoBehaviour
     }
 
     /// <summary>
+    /// 花火演出をすべてリセットする
+    /// </summary>
+    public void ResetVisualEffects()
+    {
+        foreach (var visualEffect in activeEffects)
+        {
+            Destroy(visualEffect);
+        }
+        activeEffects.Clear();
+    }
+
+    /// <summary>
     /// Follow Cameraに切り替える
     /// </summary>
     /// <param name="target">Follow対象のターゲット</param>
