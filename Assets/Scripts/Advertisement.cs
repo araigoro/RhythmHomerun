@@ -27,7 +27,7 @@ public class Advertisement : MonoBehaviour
     /// <summary>
     /// アプリを何回起動で広告を表示するか
     /// </summary>
-    private const int showAdCount = 5;
+    private const int showAdCount = 1;
 
 
     // Start is called before the first frame update
