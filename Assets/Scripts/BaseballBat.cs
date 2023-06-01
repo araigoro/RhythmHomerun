@@ -23,21 +23,6 @@ public class BaseballBat : MonoBehaviour
     private const float hitPower = 1.0f;
 
     /// <summary>
-    ///　打ったオブジェクトをレフトに飛ばすかどうかの基準値
-    /// </summary>
-    private const float borderLeftDirection = 0.2f;
-
-    /// <summary>
-    /// 打ったオブジェクトをライトに飛ばすかどうかの基準値
-    /// </summary>
-    private const float borderRightDirection = 0.0f;
-
-    /// <summary>
-    /// 打撃音の大きさ
-    /// </summary>
-    private const float hitTargetVolume = 0.3f;
-
-    /// <summary>
     /// 現在アクティブになっているターゲット
     /// </summary>
     private Target activeTarget;
@@ -48,9 +33,19 @@ public class BaseballBat : MonoBehaviour
     private Collider batCollider;
 
     /// <summary>
+    /// 打撃音の大きさ
+    /// </summary>
+    private const float hitTargetVolume = 0.3f;
+
+    /// <summary>
     /// 飛距離
     /// </summary>
     private const float maxDistance = 35f;
+
+    /// <summary>
+    /// ターゲットとのZ距離の最大値
+    /// </summary>
+    private const float maxDiffZ = 0.6f;
 
     /// <summary>
     /// ターゲットとのZ距離の最小値
@@ -58,10 +53,6 @@ public class BaseballBat : MonoBehaviour
     private const float minDiffZ = 0.25f;
 
     /// <summary>
-    /// ターゲットとのZ距離の最大値
-    /// </summary>
-    private const float maxDiffZ = 0.6f;
-
     /// 打撃音再生用
     /// </summary>
     private AudioSource audioSource;
@@ -136,9 +127,6 @@ public class BaseballBat : MonoBehaviour
 
         //ターゲットオブジェクトを放物線状に飛ばす
         target.MoveParabola(targetPosition, hitPower, hitAngle);
-
-        //打撃音を鳴らす
-        AudioSource.PlayClipAtPoint(soundHit, transform.position);
     }
 
     /// <summary>
