@@ -4,10 +4,10 @@ using GoogleMobileAds.Api;
 public class Advertisement : MonoBehaviour
 {
     /// <summary>
-    /// テスト用広告ユニットID
+    /// 広告ユニットID
     /// </summary>
     #if UNITY_ANDROID
-        private string adUnitId = "ca-app-pub-3940256099942544/1033173712";
+        private string adUnitId = "ca-app-pub-4082997832043888/2794850342";
     #elif UNITY_IPHONE
             private string adUnitId = "ca-app-pub-3940256099942544/4411468910";
     #else
@@ -27,7 +27,7 @@ public class Advertisement : MonoBehaviour
     /// <summary>
     /// アプリを何回起動で広告を表示するか
     /// </summary>
-    private const int showAdCount = 5;
+    private const int showAdCount = 1;
 
 
     // Start is called before the first frame update
